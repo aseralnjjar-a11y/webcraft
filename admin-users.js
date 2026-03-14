@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const teacherNameDisplay = document.getElementById('teacherNameDisplay');
 
     // تم التحديث ليعمل مع Koyeb
-    const SERVER_URL = 'https://web-craft-api.onrender.com'; // تم التوحيد مع رابط السيرفر الرئيسي
+    const SERVER_URL = 'https://webcraft-bw34.onrender.com'; // الرابط الفعلي المحدث
 
     // --- بيانات وهمية للمحاكاة المحلية ---
     // دالة لترجمة الأدوار إلى العربية
