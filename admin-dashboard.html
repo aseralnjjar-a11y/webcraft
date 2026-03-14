@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة الإدارة | Web Craft</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-dark text-white">
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-black border-bottom border-secondary fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#">WEB<span class="text-grad">CRAFT</span> ADMIN</a>
+            <div class="ms-auto">
+                <a href="index.html" class="btn btn-sm btn-outline-light me-2">الموقع العام</a>
+                <button class="btn btn-sm btn-danger" onclick="sessionStorage.clear(); window.location.href='index.html'">خروج</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-5 pt-5">
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="feature-card text-center p-4">
+                    <h5 class="opacity-75">إجمالي الطلبات</h5>
+                    <h2 id="ordersTotalCount" class="fw-bold text-grad">0</h2>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="feature-card text-center p-4 border-warning">
+                    <h5 class="opacity-75">طلبات بانتظار المراجعة</h5>
+                    <h2 id="pendingOrdersCount" class="fw-bold text-warning">0</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="feature-card p-4">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h4 class="fw-bold mb-0">إدارة طلبات المشاريع</h4>
+                <a href="admin-users.html" class="btn btn-primary-grad btn-sm">إدارة المستخدمين</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>العميل</th>
+                            <th>الخدمة</th>
+                            <th>الوصف</th>
+                            <th>الحالة</th>
+                            <th>السعر</th>
+                            <th>التاريخ</th>
+                            <th>إجراء</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminOrdersTable">
+                        <tr><td colspan="7" class="text-center opacity-50">جاري التحميل...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal للتعديل -->
+    <div class="modal fade" id="updateOrderModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-secondary">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title">تحديث حالة الطلب</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editOrderId">
+                    <div class="mb-3">
+                        <label class="form-label">حالة الطلب</label>
+                        <select id="editOrderStatus" class="form-select bg-black text-white border-secondary">
+                            <option value="pending">قيد المراجعة</option>
+                            <option value="in-progress">جاري التنفيذ</option>
+                            <option value="completed">مكتمل</option>
+                            <option value="cancelled">ملغي</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">السعر (ريال/دولار)</label>
+                        <input type="text" id="editOrderPrice" class="form-control bg-black text-white border-secondary">
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" id="saveOrderUpdateBtn" class="btn btn-primary-grad w-100">حفظ التغييرات</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>
