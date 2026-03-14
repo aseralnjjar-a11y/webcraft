@@ -1,0 +1,8 @@
+# Dependency folders
+node_modules/
+
+# Environment variables (Sensitive Data)
+.env
+
+# OS generated files
+.DS_Store

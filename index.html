@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Craft | حلول برمجية متطورة</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- مكتبة جوجل للتعريف -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-main fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold fs-3" href="#">WEB<span class="text-grad">CRAFT</span></a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link px-3" href="#" data-scroll-to="#hero">الرئيسية</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-scroll-to="#services">خدماتنا</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-scroll-to="#portfolio">أعمالنا</a></li>
+                    <li class="nav-item"><a class="nav-link px-3" href="#" data-scroll-to="#about">الشركة</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#" data-scroll-to="#contact">تواصل معنا</a></li>
+                </ul>
+                <button class="btn btn-modern btn-primary-grad ms-lg-3" onclick="openLoginDialog()">دخول العملاء</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+        <!-- Matrix Effect Background -->
+        <canvas id="matrixCanvas"></canvas>
+        <!-- عناصر الزينة الخلفية المضيئة -->
+        <div class="hero-glow-blob blob-1"></div>
+        <div class="hero-glow-blob blob-2"></div>
+        
+        <div class="container position-relative" style="z-index: 1;">
+            <div class="row align-items-center min-vh-100 py-5">
+                <div class="col-lg-7 reveal active hero-content-glass">
+                    <span class="badge rounded-pill mb-3 px-3 py-2 animate-fade-in" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); color: var(--accent-primary); font-weight: 700;">
+                        <i class="fas fa-sparkles me-1"></i> ريادة الحلول الرقمية 2024
+                    </span>
+                    <h1 class="hero-title mb-4">حوّل رؤيتك إلى <br><span class="text-grad">واقع رقمي مبهر</span></h1>
+                    <p class="lead text-light opacity-75 mb-5 fs-4 lh-base">نحن في <span class="fw-bold text-white">Web Craft</span>، نمزج بين الإبداع الهندسي والتقنيات المتطورة لبناء منصات تقود عملك نحو الصدارة العالمية.</p>
+                    <div class="d-flex flex-wrap gap-3">
+                        <a href="#contact" class="btn btn-modern btn-primary-grad shadow-lg">
+                            <i class="fas fa-rocket me-2"></i>ابدأ رحلتك الآن
+                        </a>
+                        <a href="#services" class="btn btn-modern btn-outline-light">
+                            عرض خدماتنا <i class="fas fa-arrow-left ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-5 d-none d-lg-block">
+                    <div class="hero-img-wrapper">
+                        <img src="https://cdni.iconscout.com/illustration/premium/thumb/web-development-2910117-2419282.png" class="img-fluid floating-animation hero-main-img" alt="Digital Innovation">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-5 reveal">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold display-5">قدراتنا التقنية</h2>
+                <p class="text-tech-green">نقدم حلولاً تتخطى التوقعات</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="icon-box"><i class="fas fa-code"></i></div>
+                        <h3>تطوير الويب</h3>
+                        <p class="opacity-75">بناء مواقع سريعة، آمنة، ومتجاوبة تماماً مع جميع الشاشات باستخدام أحدث التقنيات.</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">React</span><span class="tech-tag">Node.js</span><span class="tech-tag">MongoDB</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="icon-box"><i class="fas fa-mobile-alt"></i></div>
+                        <h3>تطبيقات الجوال</h3>
+                        <p class="opacity-75">تصميم وتطوير تطبيقات أندرويد و iOS بتجربة مستخدم سلسة وأداء فائق.</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Flutter</span><span class="tech-tag">Firebase</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card">
+                        <div class="icon-box"><i class="fas fa-paint-brush"></i></div>
+                        <h3>تصميم UI/UX</h3>
+                        <p class="opacity-75">واجهات بصرية جذابة تركز على رحلة العميل وتضمن سهولة الاستخدام.</p>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Figma</span><span class="tech-tag">Adobe XD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Section -->
+    <section id="portfolio" class="py-5 bg-black bg-opacity-20 reveal">
+        <div class="container py-5">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">مشاريع نعتز بها</h2>
+                <p class="opacity-75">نماذج من أعمالنا البرمجية التي ساهمت في نجاح عملائنا</p>
+            </div>
+            <div class="row g-4" id="portfolioContainer">
+                <!-- سيتم ملؤه ديناميكياً بواسطة JS -->
+                <div class="col-12 text-center py-5" id="portfolioLoader">
+                    <div class="spinner-border text-primary" role="status"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container py-5">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <div class="pe-lg-5">
+                        <span class="text-fuchsia fw-bold mb-2 d-block">ريادة وابتكار</span>
+                        <h2 class="fw-bold mb-4">لماذا تختار <span class="text-grad">Web Craft</span>؟</h2>
+                        <p class="lead opacity-75 mb-4">نحن لا نبرمج مجرد أكواد، بل نصنع تجارب رقمية متكاملة تهدف إلى زيادة مبيعاتك وتعزيز وجودك الرقمي بأعلى معايير الجودة العالمية.</p>
+                        <ul class="list-unstyled">
+                            <li class="mb-3"><i class="fas fa-check-circle text-tech-green me-2"></i> فريق من أمهر المبرمجين والمصممين.</li>
+                            <li class="mb-3"><i class="fas fa-check-circle text-tech-green me-2"></i> دعم فني متواصل وحلول قابلة للتوسع.</li>
+                            <li class="mb-3"><i class="fas fa-check-circle text-tech-green me-2"></i> الالتزام التام بمواعيد التسليم.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-6 mt-4 mt-lg-0">
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="feature-card p-4 text-center">
+                                <h4 class="vibrant-orange fw-bold">100%</h4>
+                                <p class="small mb-0">رضا العملاء</p>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="feature-card p-4 text-center">
+                                <h4 class="vibrant-fuchsia fw-bold">24/7</h4>
+                                <p class="small mb-0">دعم تقني</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats" class="py-5 bg-black bg-opacity-25">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3 col-6 stat-item">
+                    <span class="stat-number" data-target="150">0</span>
+                    <p>مشروع مكتمل</p>
+                </div>
+                <div class="col-md-3 col-6 stat-item">
+                    <span class="stat-number" data-target="80">0</span>
+                    <p>عميل سعيد</p>
+                </div>
+                <div class="col-md-3 col-6 stat-item">
+                    <span class="stat-number" data-target="12">0</span>
+                    <p>خبير تقني</p>
+                </div>
+                <div class="col-md-3 col-6 stat-item">
+                    <span class="stat-number" data-target="5">0</span>
+                    <p>سنوات خبرة</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5 reveal">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-10">
+                    <div class="contact-prestige-card">
+                        <div class="text-center mb-5">
+                            <h2 class="fw-bold display-6 mb-3">لنبدأ <span class="text-grad">رحلة النجاح</span> معاً</h2>
+                            <p class="opacity-75">املأ البيانات التالية وسيقوم خبراؤنا بالتواصل معك خلال 24 ساعة</p>
+                        </div>
+                        <form id="orderForm">
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="input-group-modern">
+                                        <i class="fas fa-user icon"></i>
+                                        <input type="text" id="orderClientName" placeholder="الاسم الكامل" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group-modern">
+                                        <i class="fas fa-envelope icon"></i>
+                                        <input type="email" id="orderEmail" placeholder="البريد الإلكتروني" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group-modern">
+                                        <i class="fas fa-phone icon"></i>
+                                        <input type="tel" id="orderPhone" placeholder="رقم الهاتف" required>
+                                    </div>
+                                </div>
+                                <div class="col-12 mb-2">
+                                    <label class="form-label small opacity-75 mb-3 d-block"><i class="fas fa-layer-group me-2 text-grad"></i> اختر نوع الخدمة المطلوبة:</label>
+                                    <div class="service-selection-grid">
+                                        <label class="service-card" style="--card-color: var(--accent-secondary);">
+                                            <input type="radio" name="serviceType" value="web" required checked>
+                                            <div class="card-content">
+                                                <i class="fas fa-globe"></i>
+                                                <span>مواقع ويب</span>
+                                            </div>
+                                        </label>
+                                        <label class="service-card" style="--card-color: var(--accent-primary);">
+                                            <input type="radio" name="serviceType" value="mobile">
+                                            <div class="card-content">
+                                                <i class="fas fa-mobile-alt"></i>
+                                                <span>تطبيقات جوال</span>
+                                            </div>
+                                        </label>
+                                        <label class="service-card" style="--card-color: var(--vibrant-fuchsia);">
+                                            <input type="radio" name="serviceType" value="design">
+                                            <div class="card-content">
+                                                <i class="fas fa-paint-brush"></i>
+                                                <span>تصميم UI/UX</span>
+                                            </div>
+                                        </label>
+                                        <label class="service-card" style="--card-color: var(--tech-green);">
+                                            <input type="radio" name="serviceType" value="consulting">
+                                            <div class="card-content">
+                                                <i class="fas fa-lightbulb"></i>
+                                                <span>استشارة تقنية</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group-modern">
+                                        <i class="fas fa-comment-dots icon textarea-icon"></i>
+                                        <textarea id="orderDescription" rows="5" placeholder="اشرح لنا تفاصيل مشروعك..." required></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-12 text-center mt-2">
+                                    <button type="submit" id="orderSubmitBtn" class="btn btn-modern btn-primary-grad w-100 py-3">
+                                        <span class="btn-text">إرسال الطلب الآن</span>
+                                        <span class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Toast Notification -->
+    <div class="toast-container position-fixed bottom-0 start-0 p-3">
+        <div id="orderToast" class="toast align-items-center text-white border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body" id="toastMessage"></div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-4 border-top border-secondary">
+        <div class="container text-center">
+            <p class="opacity-50 mb-0">© 2024 Web Craft Solutions. جميع الحقوق محفوظة.</p>
+        </div>
+    </footer>
+
+    <!-- نافذة تسجيل الدخول - تم إضافتها الآن -->
+    <div id="loginDialog" class="login-dialog-overlay">
+        <div class="login-card">
+            <button class="close-btn" onclick="closeLoginDialog()">&times;</button>
+            <h2 class="fw-bold mb-4 text-center">تسجيل الدخول</h2>
+            <p class="text-center opacity-75 mb-5">استخدم حسابك في جوجل للوصول السريع والآمن لمشاريعك</p>
+            
+            <!-- حاوية زر جوجل -->
+            <div id="googleBtnContainer" class="d-flex justify-content-center">
+                <div id="googleBtn"></div>
+            </div>
+            <div id="dialogAuthError" class="alert alert-danger py-2 mt-4 mb-0 small" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
