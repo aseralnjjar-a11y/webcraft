@@ -191,77 +191,14 @@
             <div class="row justify-content-center">
                 <div class="col-lg-10">
                     <div class="contact-prestige-card">
-                        <div class="text-center mb-5">
-                            <h2 class="fw-bold display-6 mb-3">لنبدأ <span class="text-grad">رحلة النجاح</span> معاً</h2>
-                            <p class="opacity-75">املأ البيانات التالية وسيقوم خبراؤنا بالتواصل معك خلال 24 ساعة</p>
+                        <div class="text-center py-5">
+                            <i class="fas fa-user-lock fa-4x text-grad mb-4"></i>
+                            <h2 class="fw-bold display-6 mb-3">ابدأ مشروعك الاحترافي اليوم</h2>
+                            <p class="opacity-75 lead mb-5">لضمان تقديم أفضل خدمة ومتابعة دقيقة لمراحل مشروعك، يرجى تسجيل الدخول أولاً لإرسال طلبك.</p>
+                            <button class="btn btn-modern btn-primary-grad px-5 fs-5" onclick="openLoginDialog()">
+                                <i class="fas fa-sign-in-alt me-2"></i> تسجيل الدخول لبدء الطلب
+                            </button>
                         </div>
-                        <form id="orderForm">
-                            <div class="row g-4">
-                                <div class="col-md-6">
-                                    <div class="input-group-modern">
-                                        <i class="fas fa-user icon"></i>
-                                        <input type="text" id="orderClientName" placeholder="الاسم الكامل" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group-modern">
-                                        <i class="fas fa-envelope icon"></i>
-                                        <input type="email" id="orderEmail" placeholder="البريد الإلكتروني" required>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="input-group-modern">
-                                        <i class="fas fa-phone icon"></i>
-                                        <input type="tel" id="orderPhone" placeholder="رقم الهاتف" required>
-                                    </div>
-                                </div>
-                                <div class="col-12 mb-2">
-                                    <label class="form-label small opacity-75 mb-3 d-block"><i class="fas fa-layer-group me-2 text-grad"></i> اختر نوع الخدمة المطلوبة:</label>
-                                    <div class="service-selection-grid">
-                                        <label class="service-card" style="--card-color: var(--accent-secondary);">
-                                            <input type="radio" name="serviceType" value="web" required checked>
-                                            <div class="card-content">
-                                                <i class="fas fa-globe"></i>
-                                                <span>مواقع ويب</span>
-                                            </div>
-                                        </label>
-                                        <label class="service-card" style="--card-color: var(--accent-primary);">
-                                            <input type="radio" name="serviceType" value="mobile">
-                                            <div class="card-content">
-                                                <i class="fas fa-mobile-alt"></i>
-                                                <span>تطبيقات جوال</span>
-                                            </div>
-                                        </label>
-                                        <label class="service-card" style="--card-color: var(--vibrant-fuchsia);">
-                                            <input type="radio" name="serviceType" value="design">
-                                            <div class="card-content">
-                                                <i class="fas fa-paint-brush"></i>
-                                                <span>تصميم UI/UX</span>
-                                            </div>
-                                        </label>
-                                        <label class="service-card" style="--card-color: var(--tech-green);">
-                                            <input type="radio" name="serviceType" value="consulting">
-                                            <div class="card-content">
-                                                <i class="fas fa-lightbulb"></i>
-                                                <span>استشارة تقنية</span>
-                                            </div>
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="col-12">
-                                    <div class="input-group-modern">
-                                        <i class="fas fa-comment-dots icon textarea-icon"></i>
-                                        <textarea id="orderDescription" rows="5" placeholder="اشرح لنا تفاصيل مشروعك..." required></textarea>
-                                    </div>
-                                </div>
-                                <div class="col-12 text-center mt-2">
-                                    <button type="submit" id="orderSubmitBtn" class="btn btn-modern btn-primary-grad w-100 py-3">
-                                        <span class="btn-text">إرسال الطلب الآن</span>
-                                        <span class="spinner-border spinner-border-sm ms-2 d-none" role="status"></span>
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
                     </div>
                 </div>
             </div>

@@ -19,7 +19,9 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'index.html';
         return;
     }
-    document.getElementById('adminLastLogin').textContent = `آخر دخول: ${new Date(user.lastLogin).toLocaleString('ar-EG')}`;
+    if (user.lastLogin) {
+        document.getElementById('adminLastLogin').textContent = `آخر دخول: ${new Date(user.lastLogin).toLocaleString('ar-EG')}`;
+    }
 
     // --- دالة لجلب وعرض الطلبات ---
     async function loadAdminData() {

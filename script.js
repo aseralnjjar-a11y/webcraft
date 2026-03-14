@@ -87,67 +87,6 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// --- جديد: معالجة نموذج الطلبات وربطه بالسيرفر ---
-const orderForm = document.getElementById('orderForm');
-if (orderForm) {
-    orderForm.addEventListener('submit', async function(e) {
-        e.preventDefault();
-        const submitBtn = document.getElementById('orderSubmitBtn');
-        const btnText = submitBtn.querySelector('.btn-text');
-        const spinner = submitBtn.querySelector('.spinner-border');
-        const toastEl = document.getElementById('orderToast');
-        const toastMsg = document.getElementById('toastMessage');
-        const toast = new bootstrap.Toast(toastEl);
-        
-        const orderData = {
-            clientId: "GUEST_" + Date.now(),
-            clientName: document.getElementById('orderClientName').value,
-            email: document.getElementById('orderEmail').value,
-            phone: document.getElementById('orderPhone').value,
-            serviceType: document.querySelector('input[name="serviceType"]:checked')?.value || '',
-            description: document.getElementById('orderDescription').value
-        };
-
-        // التحقق البسيط
-        if (orderData.phone.length < 8) {
-            showToast('الرجاء إدخال رقم هاتف صحيح', 'bg-danger-glass');
-            return;
-        }
-
-        try {
-            // تفعيل مؤشر التحميل
-            submitBtn.disabled = true;
-            btnText.textContent = 'جاري الإرسال...';
-            spinner.classList.remove('d-none');
-
-            const response = await fetch(`${SERVER_URL}/api/orders`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(orderData)
-            });
-
-            if (response.ok) {
-                showToast('تم إرسال طلبك بنجاح! سنتواصل معك قريباً.', 'bg-success-glass');
-                orderForm.reset();
-            } else {
-                throw new Error();
-            }
-        } catch (error) {
-            showToast('فشل إرسال الطلب. يرجى التحقق من الاتصال.', 'bg-danger-glass');
-        } finally {
-            submitBtn.disabled = false;
-            btnText.textContent = 'إرسال الطلب الآن';
-            spinner.classList.add('d-none');
-        }
-
-        function showToast(msg, bgClass) {
-            toastEl.className = `toast align-items-center text-white border-0 ${bgClass}`;
-            toastMsg.textContent = msg;
-            toast.show();
-        }
-    });
-}
-
 // --- جلب المشاريع من السيرفر وعرضها ديناميكياً ---
 async function loadProjects() {
     const container = document.getElementById('portfolioContainer');

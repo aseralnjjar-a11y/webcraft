@@ -174,6 +174,15 @@ async function createDefaultAdminIfNeeded() {
 // المسارات (Routes)
 // =======================
 
+// توحيد كائن الصفحات لسهولة الصيانة
+const dashboardPages = { 
+    client: 'client-dashboard.html', 
+    developer: 'developer-dashboard.html', 
+    admin: 'admin-dashboard.html',
+    teacher: 'teacher-dashboard.html',
+    student: 'student-dashboard.html'
+};
+
 // --- مسارات المستخدمين وتسجيل الدخول ---
 app.post('/api/auth/google', async (req, res) => {
     const { token } = req.body;
@@ -190,9 +199,8 @@ app.post('/api/auth/google', async (req, res) => {
         const payload = ticket.getPayload();
         const email = payload.email;
 
-        // البحث عن المستخدم ببريده الإلكتروني (الذي نعتبره الـ id هنا للتبسيط)
-        let user = await User.findOne({ id: email });
         const isAdminEmail = email === 'aseralnjjar@gmail.com';
+        let user = await User.findOne({ id: email });
 
         if (!user) {
             user = new User({
@@ -202,21 +210,14 @@ app.post('/api/auth/google', async (req, res) => {
                 role: isAdminEmail ? 'admin' : 'client'
             });
         } else if (isAdminEmail && user.role !== 'admin') {
-            // تصحيح: إذا كان الحساب موجوداً كعميل سابقاً، نقوم بترقيته فوراً عند دخول الأدمن
+            // ترقية الحساب إذا كان مسجلاً مسبقاً كعميل
             user.role = 'admin';
         }
 
         user.lastLogin = new Date();
         await user.save();
 
-        const pages = { 
-            client: 'client-dashboard.html', 
-            developer: 'developer-dashboard.html', 
-            admin: 'admin-dashboard.html',
-            teacher: 'teacher-dashboard.html',
-            student: 'student-dashboard.html'
-        };
-        res.json({ user, redirectTo: pages[user.role] });
+        res.json({ user, redirectTo: dashboardPages[user.role] });
     } catch (error) {
         console.error('❌ Google Auth Full Error:', error);
         res.status(401).json({ message: 'فشل التحقق من حساب جوجل: ' + error.message });
@@ -234,14 +235,7 @@ app.post('/api/login', async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
-    const pages = { 
-        client: 'client-dashboard.html', 
-        developer: 'developer-dashboard.html', 
-        admin: 'admin-dashboard.html',
-        teacher: 'teacher-dashboard.html',
-        student: 'student-dashboard.html'
-    };
-    res.json({ message: 'تم تسجيل الدخول بنجاح', user: user, redirectTo: pages[user.role] });
+    res.json({ message: 'تم تسجيل الدخول بنجاح', user: user, redirectTo: dashboardPages[user.role] });
 });
 
 app.post('/api/users', async (req, res) => {
