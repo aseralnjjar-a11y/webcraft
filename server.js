@@ -28,6 +28,12 @@ app.use(cors()); // نقل مديول CORS للأعلى لضمان عمله مع
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 app.use(express.json());
+// إضافة Header لحل مشكلة Cross-Origin-Opener-Policy
+app.use((req, res, next) => {
+    res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    res.setHeader('Cross-Origin-Embedder-Policy', 'unsafe-none');
+    next();
+});
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname)));
 
@@ -167,6 +173,10 @@ async function createDefaultAdminIfNeeded() {
 app.post('/api/auth/google', async (req, res) => {
     const { token } = req.body;
     try {
+        if (!token) return res.status(400).json({ message: 'التوكن مفقود' });
+        
+        console.log("🔍 محاولة التحقق من التوكن باستخدام Client ID:", process.env.GOOGLE_CLIENT_ID);
+        
         if (!process.env.GOOGLE_CLIENT_ID) throw new Error("GOOGLE_CLIENT_ID is missing in environment variables");
         const ticket = await googleClient.verifyIdToken({
             idToken: token,
@@ -201,8 +211,8 @@ app.post('/api/auth/google', async (req, res) => {
         };
         res.json({ user, redirectTo: pages[user.role] });
     } catch (error) {
-        console.error('❌ Google Auth Error:', error.message);
-        res.status(401).json({ message: 'فشل التحقق من حساب جوجل.' });
+        console.error('❌ Google Auth Full Error:', error);
+        res.status(401).json({ message: 'فشل التحقق من حساب جوجل: ' + error.message });
     }
 });
 

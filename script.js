@@ -47,11 +47,18 @@ function initGoogleAuth() {
     if (typeof google !== 'undefined') {
         google.accounts.id.initialize({
             client_id: "377747466694-ov9o47r36odfd7j0mn4di0rldu08fc8g.apps.googleusercontent.com",
-            callback: handleCredentialResponse
+            callback: handleCredentialResponse,
+            ux_mode: 'popup',
+            auto_select: false
         });
         google.accounts.id.renderButton(
             document.getElementById("googleBtn"),
-            { theme: "filled_blue", size: "large", width: "100%", text: "signin_with" }
+            { 
+                theme: "filled_blue", 
+                size: "large", 
+                width: 350, // تم التغيير من 100% إلى رقم ثابت لحل خطأ العرض
+                text: "signin_with" 
+            }
         );
     }
 }
