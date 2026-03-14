@@ -155,6 +155,11 @@ async function createDefaultAdminIfNeeded() {
             });
             await defaultAdmin.save();
             console.log('✅ تم إنشاء حساب المدير العام الافتراضي.');
+        } else if (generalAdminExists.role !== 'admin') {
+            // تصحيح: إذا كان الحساب موجوداً ولكن ليس برتبة أدمن، يتم ترقيته فوراً
+            generalAdminExists.role = 'admin';
+            await generalAdminExists.save();
+            console.log('✅ تم ترقية حساب aseralnjjar@gmail.com إلى مدير عام.');
         }
 
         // 2. التحقق من وجود مراقب النظام (المدير الخفي)
@@ -187,18 +192,18 @@ app.post('/api/auth/google', async (req, res) => {
 
         // البحث عن المستخدم ببريده الإلكتروني (الذي نعتبره الـ id هنا للتبسيط)
         let user = await User.findOne({ id: email });
+        const isAdminEmail = email === 'aseralnjjar@gmail.com';
 
         if (!user) {
-            // إذا كان الإيميل هو إيميل الأدمن المعتمد، نعطيه رتبة admin فوراً
-            const isAdminEmail = email === 'aseralnjjar@gmail.com';
-            
             user = new User({
                 id: email,
                 name: payload.name,
                 password: 'google_auth_no_password',
                 role: isAdminEmail ? 'admin' : 'client'
             });
-            await user.save();
+        } else if (isAdminEmail && user.role !== 'admin') {
+            // تصحيح: إذا كان الحساب موجوداً كعميل سابقاً، نقوم بترقيته فوراً عند دخول الأدمن
+            user.role = 'admin';
         }
 
         user.lastLogin = new Date();
