@@ -28,7 +28,7 @@ app.use(cors()); // نقل مديول CORS للأعلى لضمان عمله مع
 const googleClient = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 app.use(express.json());
-// إضافة Header لحل مشكلة Cross-Origin-Opener-Policy
+// --- إضافة Headers لحل مشكلة Cross-Origin-Opener-Policy مع جوجل ---
 app.use((req, res, next) => {
     res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
     res.setHeader('Cross-Origin-Embedder-Policy', 'unsafe-none');
@@ -144,7 +144,7 @@ async function createDefaultAdminIfNeeded() {
     try {
         // --- التصحيح: التحقق من وجود كل حساب مدير على حدة ---
 
-        // 1. التحقق من وجود المدير العام باستخدام الإيميل الجديد
+        // 1. التحقق من وجود المدير العام أو ترقية حسابه إذا وجد
         const generalAdminExists = await User.findOne({ id: 'aseralnjjar@gmail.com' });
         if (!generalAdminExists) {
             const defaultAdmin = new User({
@@ -155,11 +155,6 @@ async function createDefaultAdminIfNeeded() {
             });
             await defaultAdmin.save();
             console.log('✅ تم إنشاء حساب المدير العام الافتراضي.');
-        } else if (generalAdminExists.role !== 'admin') {
-            // تصحيح: إذا كان الحساب موجوداً ولكن ليس برتبة أدمن، يتم ترقيته فوراً
-            generalAdminExists.role = 'admin';
-            await generalAdminExists.save();
-            console.log('✅ تم ترقية حساب aseralnjjar@gmail.com إلى مدير عام.');
         }
 
         // 2. التحقق من وجود مراقب النظام (المدير الخفي)
@@ -174,13 +169,15 @@ async function createDefaultAdminIfNeeded() {
 // المسارات (Routes)
 // =======================
 
-// توحيد كائن الصفحات لسهولة الصيانة
-const dashboardPages = { 
-    client: 'client-dashboard.html', 
-    developer: 'developer-dashboard.html', 
-    admin: 'admin-dashboard.html',
-    teacher: 'teacher-dashboard.html',
-    student: 'student-dashboard.html'
+// كائن توجيه الصفحات
+const getRedirectPage = (role) => {
+    const pages = { 
+        client: 'client-dashboard.html', 
+        admin: 'admin-dashboard.html',
+        teacher: 'teacher-dashboard.html',
+        student: 'student-dashboard.html'
+    };
+    return pages[role] || 'index.html';
 };
 
 // --- مسارات المستخدمين وتسجيل الدخول ---

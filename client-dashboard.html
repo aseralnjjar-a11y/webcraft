@@ -30,9 +30,39 @@
     <div class="dashboard-wrapper">
         <div class="container">
             <div class="row g-4">
-                <!-- نموذج طلب مشروع جديد -->
+                <!-- قسم إرسال طلب جديد -->
                 <div class="col-lg-4">
                     <div class="client-card shadow-lg">
+                        <h4 class="fw-bold mb-4"><i class="fas fa-plus-circle text-grad me-2"></i>طلب مشروع جديد</h4>
+                        <form id="dashboardOrderForm">
+                            <div class="mb-3">
+                                <label class="form-label small opacity-75">نوع الخدمة</label>
+                                <select id="orderServiceType" class="form-select bg-dark text-white border-secondary" required>
+                                    <option value="web">موقع ويب</option>
+                                    <option value="mobile">تطبيق جوال</option>
+                                    <option value="design">تصميم UI/UX</option>
+                                    <option value="consulting">استشارة تقنية</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small opacity-75">وصف المشروع</label>
+                                <textarea id="orderDescription" class="form-control bg-dark text-white border-secondary" rows="4" placeholder="اشرح فكرتك باختصار..." required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label small opacity-75">رقم الهاتف</label>
+                                <input type="tel" id="orderPhone" class="form-control bg-dark text-white border-secondary" placeholder="05xxxxxxxx" required>
+                            </div>
+                            <button type="submit" id="submitOrderBtn" class="btn btn-primary-grad w-100 py-2">
+                                <span class="btn-text">إرسال الطلب</span>
+                                <span class="spinner-border spinner-border-sm d-none"></span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- جدول الطلبات -->
+                <div class="col-lg-4">
+                    <div class="client-card">
                         <h4 class="fw-bold mb-4"><i class="fas fa-plus-circle text-grad me-2"></i>طلب مشروع جديد</h4>
                         <form id="dashboardOrderForm">
                             <div class="mb-3">
@@ -88,74 +118,41 @@
 
     <script>
         const SERVER_URL = 'https://webcraft-bw34.onrender.com';
-        let currentUser = null;
 
         document.addEventListener('DOMContentLoaded', async () => {
-            currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-            if (!currentUser) {
+            const user = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!user) {
                 window.location.href = 'index.html';
                 return;
             }
 
-            document.getElementById('userName').textContent = `مرحباً، ${currentUser.name}`;
-            fetchOrders();
-        });
-
-        async function fetchOrders() {
+            document.getElementById('userName').textContent = `مرحباً، ${user.name}`;
+            
             try {
-                const response = await fetch(`${SERVER_URL}/api/orders/client/${currentUser.id}`);
+                const response = await fetch(`${SERVER_URL}/api/orders/client/${user.id}`);
                 const orders = await response.json();
-                const tableBody = document.getElementById('clientOrdersTable');
                 
+                const tableBody = document.getElementById('clientOrdersTable');
                 if (orders.length === 0) {
                     tableBody.innerHTML = '<tr><td colspan="5" class="text-center opacity-50">لم تقم بإرسال أي طلبات بعد.</td></tr>';
                     return;
                 }
+
                 const statusText = { 'pending': 'قيد المراجعة', 'in-progress': 'جاري التنفيذ', 'completed': 'مكتمل', 'cancelled': 'ملغي' };
                 const statusColors = { 'pending': 'bg-warning text-dark', 'in-progress': 'bg-info text-dark', 'completed': 'bg-success', 'cancelled': 'bg-danger' };
-                const serviceText = { 'web': 'موقع ويب', 'mobile': 'تطبيق جوال', 'design': 'UI/UX', 'consulting': 'استشارة' };
-                
+
                 tableBody.innerHTML = orders.map(order => `
                     <tr>
-                        <td><span class="badge bg-secondary">${serviceText[order.serviceType] || order.serviceType}</span></td>
+                        <td><span class="badge bg-secondary">${order.serviceType}</span></td>
                         <td><small>${order.description.substring(0, 50)}...</small></td>
                         <td><span class="badge ${statusColors[order.status]}">${statusText[order.status]}</span></td>
-                        <td class="fw-bold text-info">${order.price}</td>
+                        <td>${order.price}</td>
                         <td>${new Date(order.createdAt).toLocaleDateString('ar-EG')}</td>
                     </tr>
                 `).join('');
-            } catch (err) { console.error(err); }
-        }
-
-        // إرسال طلب جديد مربوط بالمستخدم الحالي
-        document.getElementById('dashboardOrderForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const submitBtn = document.getElementById('submitOrderBtn');
-            
-            const orderData = {
-                clientId: currentUser.id, 
-                clientName: currentUser.name,
-                email: currentUser.id,
-                phone: document.getElementById('orderPhone').value,
-                serviceType: document.getElementById('orderServiceType').value,
-                description: document.getElementById('orderDescription').value
-            };
-
-            try {
-                submitBtn.disabled = true;
-                const res = await fetch(`${SERVER_URL}/api/orders`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(orderData)
-                });
-
-                if (res.ok) {
-                    alert('تم إرسال طلبك بنجاح!');
-                    document.getElementById('dashboardOrderForm').reset();
-                    fetchOrders(); 
-                }
-            } catch (err) { alert('خطأ في الاتصال بالسيرفر'); }
-            finally { submitBtn.disabled = false; }
+            } catch (err) {
+                console.error(err);
+            }
         });
 
         function logout() {

@@ -2,7 +2,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const ordersCountEl = document.getElementById('ordersTotalCount');
     const pendingCountEl = document.getElementById('pendingOrdersCount');
     const completedCountEl = document.getElementById('completedOrdersCount');
-    const totalClientsEl = document.getElementById('totalClientsCount');
+    const totalRevenueEl = document.getElementById('totalRevenue');
+    const completionRateText = document.getElementById('completionRateText');
+    const completionRateProgress = document.getElementById('completionRateProgress');
     const ordersTableBody = document.getElementById('adminOrdersTable');
     const searchInput = document.getElementById('adminSearchInput');
     const statusFilter = document.getElementById('statusFilter');
@@ -12,6 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const SERVER_URL = 'https://webcraft-bw34.onrender.com'; // الرابط الفعلي المحدث
     let allOrders = [];
+    let ordersChart, servicesChart;
 
     // --- التحقق من الصلاحيات وعرض بيانات المدير ---
     const user = JSON.parse(sessionStorage.getItem('currentUser'));
@@ -30,20 +33,36 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!response.ok) throw new Error('فشل جلب الطلبات');
             allOrders = await response.json();
             
-            // تحديث الإحصائيات
-            ordersCountEl.textContent = allOrders.length;
-            pendingCountEl.textContent = allOrders.filter(o => o.status === 'pending').length;
-            completedCountEl.textContent = allOrders.filter(o => o.status === 'completed').length;
-            
-            // جلب عدد العملاء المميزين
-            const uniqueClients = new Set(allOrders.map(o => o.clientId)).size;
-            totalClientsEl.textContent = uniqueClients;
+            updateStats();
+            initCharts();
             
             applyFilters(); // عرض البيانات المبدئية
 
         } catch (error) {
             console.error('Error loading admin data:', error);
         }
+    }
+
+    function updateStats() {
+        const total = allOrders.length;
+        const pending = allOrders.filter(o => o.status === 'pending').length;
+        const completed = allOrders.filter(o => o.status === 'completed').length;
+        
+        ordersCountEl.textContent = total;
+        pendingCountEl.textContent = pending;
+        document.getElementById('newOrdersBadge').textContent = pending;
+
+        // حساب الأرباح التقريبية
+        const revenue = allOrders.reduce((acc, o) => {
+            const p = parseFloat(o.price.replace(/[^0-9.]/g, '')) || 0;
+            return acc + p;
+        }, 0);
+        totalRevenueEl.textContent = revenue.toLocaleString('ar-SA') + ' ر.س';
+
+        // نسبة الإنجاز
+        const rate = total > 0 ? Math.round((completed / total) * 100) : 0;
+        completionRateText.textContent = rate + '%';
+        completionRateProgress.style.width = rate + '%';
     }
 
     function applyFilters() {
@@ -66,7 +85,7 @@ document.addEventListener('DOMContentLoaded', function() {
         ordersTableBody.innerHTML = '';
 
         if (orders.length === 0) {
-            ordersTableBody.innerHTML = `<tr><td colspan="7" class="text-center text-muted">لا توجد طلبات واردة حالياً.</td></tr>`;
+            ordersTableBody.innerHTML = `<tr><td colspan="6" class="text-center py-5 opacity-50">لا توجد طلبات تطابق معايير البحث.</td></tr>`;
             return;
         }
         
@@ -77,19 +96,61 @@ document.addEventListener('DOMContentLoaded', function() {
         orders.forEach(order => {
             const row = `
                 <tr>
-                    <td><div class="fw-bold">${order.clientName}</div><div class="small opacity-50">${order.email}</div></td>
-                    <td><span class="badge bg-light text-dark border">${serviceText[order.serviceType] || order.serviceType}</span></td>
-                    <td class="d-none d-md-table-cell" title="${order.description}"><small>${order.description.substring(0, 40)}...</small></td>
+                    <td class="ps-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="rounded-circle bg-primary-grad d-flex align-items-center justify-content-center" style="width:38px; height:38px; font-size:12px;">${order.clientName.charAt(0)}</div>
+                            <div><div class="fw-bold">${order.clientName}</div><div class="small opacity-50">${order.email}</div></div>
+                        </div>
+                    </td>
+                    <td><span class="badge bg-light text-dark opacity-75">${serviceText[order.serviceType] || order.serviceType}</span></td>
                     <td>
-                        <span class="status-dot ${order.status === 'pending' ? 'bg-warning' : order.status === 'completed' ? 'bg-success' : 'bg-info'}"></span>
-                        <span class="small">${statusText[order.status] || order.status}</span>
+                        <span class="status-badge-modern ${statusColors[order.status]}">${statusText[order.status]}</span>
                     </td>
                     <td class="fw-bold text-tech-green">${order.price}</td>
                     <td>${new Date(order.createdAt).toLocaleDateString('ar-EG')}</td>
-                    <td class="text-center"><button class="btn btn-sm btn-primary-grad" onclick="openUpdateModal('${order._id}', '${order.status}', '${order.price}')"><i class="fas fa-edit"></i></button></td>
+                    <td class="text-center pe-4"><button class="btn btn-sm btn-outline-light rounded-pill px-3" onclick="openUpdateModal('${order._id}', '${order.status}', '${order.price}')">إدارة <i class="fas fa-chevron-left ms-1 small"></i></button></td>
                 </tr>
             `;
             ordersTableBody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+
+    function initCharts() {
+        const ctx1 = document.getElementById('ordersChart').getContext('2d');
+        if(ordersChart) ordersChart.destroy();
+        ordersChart = new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                datasets: [{
+                    label: 'الطلبات',
+                    data: [12, 19, 3, 5, 2, 3],
+                    borderColor: '#8b5cf6',
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(139, 92, 246, 0.1)'
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { grid: { display: false } } } }
+        });
+
+        const ctx2 = document.getElementById('servicesChart').getContext('2d');
+        if(servicesChart) servicesChart.destroy();
+        servicesChart = new Chart(ctx2, {
+            type: 'doughnut',
+            data: {
+                labels: ['Web', 'Mobile', 'Design'],
+                datasets: [{
+                    data: [
+                        allOrders.filter(o => o.serviceType === 'web').length,
+                        allOrders.filter(o => o.serviceType === 'mobile').length,
+                        allOrders.filter(o => o.serviceType === 'design').length
+                    ],
+                    backgroundColor: ['#8b5cf6', '#06b6d4', '#f43f5e'],
+                    borderWidth: 0
+                }]
+            },
+            options: { maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#fff' } } } }
         });
     }
 

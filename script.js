@@ -56,7 +56,7 @@ function initGoogleAuth() {
             { 
                 theme: "filled_blue", 
                 size: "large", 
-                width: 350, // تم التغيير من 100% إلى رقم ثابت لحل خطأ العرض
+                width: 350, 
                 text: "signin_with" 
             }
         );
