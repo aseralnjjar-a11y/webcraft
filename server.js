@@ -66,7 +66,7 @@ const userSchema = new mongoose.Schema({
     id: { type: String, required: true, unique: true },
     name: { type: String, required: true },
     password: { type: String, required: true },
-    role: { type: String, required: true, enum: ['client', 'developer', 'admin'] },
+    role: { type: String, required: true, enum: ['client', 'developer', 'admin', 'teacher', 'student'] },
     grade: { type: String },
     group: { type: String },
     teacherId: { type: String },
@@ -194,7 +194,13 @@ app.post('/api/auth/google', async (req, res) => {
         user.lastLogin = new Date();
         await user.save();
 
-        const pages = { client: 'client-dashboard.html', developer: 'developer-dashboard.html', admin: 'admin-dashboard.html' };
+        const pages = { 
+            client: 'client-dashboard.html', 
+            developer: 'developer-dashboard.html', 
+            admin: 'admin-dashboard.html',
+            teacher: 'teacher-dashboard.html',
+            student: 'student-dashboard.html'
+        };
         res.json({ user, redirectTo: pages[user.role] });
     } catch (error) {
         console.error('❌ Google Auth Error:', error.message);
@@ -213,7 +219,13 @@ app.post('/api/login', async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
-    const pages = { client: 'client-dashboard.html', developer: 'developer-dashboard.html', admin: 'admin-dashboard.html' };
+    const pages = { 
+        client: 'client-dashboard.html', 
+        developer: 'developer-dashboard.html', 
+        admin: 'admin-dashboard.html',
+        teacher: 'teacher-dashboard.html',
+        student: 'student-dashboard.html'
+    };
     res.json({ message: 'تم تسجيل الدخول بنجاح', user: user, redirectTo: pages[user.role] });
 });
 

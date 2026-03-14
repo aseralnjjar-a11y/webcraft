@@ -25,7 +25,12 @@ function handleCredentialResponse(response) {
     .then(result => {
         if (result.user) {
             sessionStorage.setItem('currentUser', JSON.stringify(result.user));
-            window.location.href = result.redirectTo;
+            if (result.redirectTo) {
+                window.location.href = result.redirectTo;
+            } else {
+                authError.textContent = 'خطأ في تحديد وجهة الدخول.';
+                authError.style.display = 'block';
+            }
         } else {
             authError.textContent = result.message || 'فشل تسجيل الدخول بجوجل.';
             authError.style.display = 'block';
