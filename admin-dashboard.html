@@ -131,6 +131,37 @@
         </div>
     </div>
 
+    <!-- Modal تحديث الطلب (ضروري لعمل السكريبت) -->
+    <div class="modal fade" id="updateOrderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark border-secondary text-white">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold">تعديل حالة الطلب</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" id="editOrderId">
+                    <div class="mb-3">
+                        <label class="form-label opacity-75">الحالة الجديدة</label>
+                        <select id="editOrderStatus" class="form-select bg-black text-white border-secondary">
+                            <option value="pending">قيد المراجعة</option>
+                            <option value="in-progress">جاري التنفيذ</option>
+                            <option value="completed">مكتمل</option>
+                            <option value="cancelled">ملغي</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label opacity-75">السعر المحدد</label>
+                        <input type="text" id="editOrderPrice" class="form-control bg-black text-white border-secondary" placeholder="مثلاً: 500 ريال">
+                    </div>
+                </div>
+                <div class="modal-footer border-secondary">
+                    <button type="button" id="saveOrderUpdateBtn" class="btn btn-primary-grad w-100">حفظ التغييرات</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="admin-dashboard.js"></script>
 </body>
