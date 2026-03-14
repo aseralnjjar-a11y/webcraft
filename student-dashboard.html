@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم الطالب | Web Craft</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .dashboard-wrapper { min-height: 100vh; background: var(--primary-bg); padding-top: 100px; }
+        .student-card { background: var(--card-bg); border: 1px solid var(--glass-border); border-radius: 20px; padding: 2rem; backdrop-filter: blur(10px); }
+        .status-badge { padding: 5px 15px; border-radius: 50px; font-size: 0.8rem; }
+        .nav-dash { background: var(--nav-bg); backdrop-filter: blur(10px); border-bottom: 1px solid var(--glass-border); }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg navbar-dark nav-dash fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="index.html">WEB<span class="text-grad">CRAFT</span></a>
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3 d-none d-md-block" id="userName">مرحباً، طالبنا</span>
+                <button class="btn btn-sm btn-outline-danger" onclick="logout()">خروج</button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="dashboard-wrapper">
+        <div class="container">
+            <div class="row g-4">
+                <!-- معلومات الطالب -->
+                <div class="col-lg-4">
+                    <div class="student-card text-center">
+                        <div class="mb-3">
+                            <i class="fas fa-user-graduate fa-4x text-grad"></i>
+                        </div>
+                        <h4 id="studentNameDisplay" class="fw-bold mb-1">---</h4>
+                        <p class="opacity-50 small mb-3" id="studentIdDisplay">ID: ---</p>
+                        <div class="d-grid gap-2">
+                            <div class="p-2 border border-secondary rounded small">
+                                <span class="d-block opacity-50">المعلم المسؤول</span>
+                                <span id="teacherName" class="fw-bold">قيد التعيين</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- الجدول الدراسي والجلسات -->
+                <div class="col-lg-8">
+                    <div class="student-card mb-4">
+                        <h5 class="fw-bold mb-4"><i class="fas fa-video me-2 text-tech-green"></i> الجلسات المباشرة</h5>
+                        <div id="sessionArea" class="p-4 border border-dashed rounded text-center">
+                            <p class="opacity-75">لا توجد جلسات نشطة حالياً. سيظهر الرابط هنا بمجرد بدء المعلم.</p>
+                        </div>
+                    </div>
+
+                    <div class="student-card">
+                        <h5 class="fw-bold mb-4"><i class="fas fa-calendar-alt me-2 text-grad"></i> جدولي الدراسي</h5>
+                        <div class="table-responsive">
+                            <table class="table table-dark table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>اليوم</th>
+                                        <th>الوقت</th>
+                                        <th>المادة/الخطة</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="scheduleBody">
+                                    <tr><td colspan="3" class="text-center opacity-50">يتم تحميل الجدول...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const user = JSON.parse(sessionStorage.getItem('currentUser'));
+            if (!user || user.role !== 'student') {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('studentNameDisplay').textContent = user.name;
+            document.getElementById('userName').textContent = `مرحباً، ${user.name}`;
+            document.getElementById('studentIdDisplay').textContent = `رقم العضوية: ${user.id}`;
+            
+            // ملء الجدول إذا وجد
+            const scheduleBody = document.getElementById('scheduleBody');
+            if (user.schedule && user.schedule.length > 0) {
+                scheduleBody.innerHTML = user.schedule.map(s => `
+                    <tr>
+                        <td>${s.day}</td>
+                        <td>${s.time}</td>
+                        <td>${s.plan || 'مراجعة عامة'}</td>
+                    </tr>
+                `).join('');
+            } else {
+                scheduleBody.innerHTML = '<tr><td colspan="3" class="text-center opacity-50">لم يتم تحديد جدول بعد.</td></tr>';
+            }
+        });
+
+        function logout() {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+    </script>
+</body>
+</html>

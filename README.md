@@ -20,7 +20,7 @@
 ## ⚙️ إعدادات البيئة (Environment Variables)
 عند رفع المشروع على Render، يجب إضافة المتغيرات التالية:
 ```text
-MONGO_URI=your_mongodb_connection_string
+MONGO_URI=mongodb+srv://webcraftteam1:vetmpSgENBZDWgR8@webcraft.l0kulrv.mongodb.net/?appName=webcraft
 GOOGLE_CLIENT_ID=your_google_client_id
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key

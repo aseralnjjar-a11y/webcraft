@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const updateOrderModal = new bootstrap.Modal(document.getElementById('updateOrderModal'));
     const saveOrderUpdateBtn = document.getElementById('saveOrderUpdateBtn');
 
-    const SERVER_URL = 'https://web-craft-backend.onrender.com'; // استبدل هذا برابط Render الخاص بك
+    const SERVER_URL = 'https://web-craft-api.onrender.com'; // تم التوحيد مع رابط السيرفر الرئيسي
 
     // --- دالة لجلب وعرض الطلبات ---
     async function loadAdminData() {

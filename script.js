@@ -1,4 +1,4 @@
-const SERVER_URL = 'https://web-craft-backend.onrender.com'; // استبدل هذا برابط Render الخاص بك
+const SERVER_URL = 'https://web-craft-api.onrender.com'; // ضع رابط Render الفعلي هنا
 const mainNavbar = document.querySelector('.navbar-main');
 
 function openLoginDialog(role) { // أعدنا role مؤقتاً للتوافق مع الاستدعاء القديم
