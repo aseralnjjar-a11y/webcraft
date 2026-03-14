@@ -38,9 +38,7 @@ app.get('/', (req, res) => {
 // =======================
 // إعداد الاتصال بقاعدة البيانات
 // =======================
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('✅ تم الاتصال بقاعدة البيانات بنجاح'))
-    .catch(err => console.error('❌ فشل الاتصال بقاعدة البيانات:', err));
+// تم نقل منطق الاتصال لأسفل الملف لضمان الترتيب الصحيح للتشغيل
 
 // =======================
 // إعداد Cloudinary
@@ -655,12 +653,30 @@ app.get('/api/stats/overview', async (req, res) => {
 // =======================
 const PORT = process.env.PORT || 10000;
 
-// --- تعديل: التأكد من إنشاء حسابات المدراء قبل تشغيل الخادم ---
-createDefaultAdminIfNeeded().then(() => {
-    server.listen(PORT, () => {
-        console.log(`✅ الخادم يعمل الآن على المنفذ ${PORT}`);
-    });
-}).catch(err => console.error("❌ فشل حاسم أثناء بدء تشغيل الخادم:", err));
+// --- نظام تشغيل السيرفر المعتمد على حالة قاعدة البيانات ---
+async function startServer() {
+    try {
+        // 1. الاتصال بقاعدة البيانات والانتظار
+        await mongoose.connect(process.env.MONGO_URI, {
+            serverSelectionTimeoutMS: 5000, // المحاولة لمدة 5 ثوانٍ فقط قبل إظهار الخطأ
+            connectTimeoutMS: 10000,
+        });
+        console.log('✅ تم الاتصال بقاعدة البيانات بنجاح');
+
+        // 2. إنشاء حسابات المدراء إذا لم تكن موجودة
+        await createDefaultAdminIfNeeded();
+
+        // 3. بدء استقبال الطلبات
+        server.listen(PORT, () => {
+            console.log(`✅ الخادم يعمل الآن على المنفذ ${PORT}`);
+        });
+    } catch (err) {
+        console.error("❌ فشل حاسم أثناء بدء تشغيل الخادم:", err);
+        process.exit(1); // إغلاق العملية في حالة الفشل التام
+    }
+}
+
+startServer();
 
 // =======================
 // مهمة مجدولة لحذف الحسابات غير النشطة

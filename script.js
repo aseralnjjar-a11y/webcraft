@@ -1,4 +1,4 @@
-const SERVER_URL = 'https://web-craft-api.onrender.com'; // ضع رابط Render الفعلي هنا
+const SERVER_URL = 'https://webcraft-bw34.onrender.com'; // الرابط الفعلي من سجلات Render
 const mainNavbar = document.querySelector('.navbar-main');
 
 function openLoginDialog(role) { // أعدنا role مؤقتاً للتوافق مع الاستدعاء القديم
