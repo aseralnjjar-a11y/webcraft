@@ -144,13 +144,13 @@ async function createDefaultAdminIfNeeded() {
     try {
         // --- التصحيح: التحقق من وجود كل حساب مدير على حدة ---
 
-        // 1. التحقق من وجود المدير العام
-        const generalAdminExists = await User.findOne({ id: '11111' });
+        // 1. التحقق من وجود المدير العام باستخدام الإيميل الجديد
+        const generalAdminExists = await User.findOne({ id: 'aseralnjjar@gmail.com' });
         if (!generalAdminExists) {
             const defaultAdmin = new User({
-                id: '11111',
+                id: 'aseralnjjar@gmail.com',
                 name: 'المدير العام',
-                password: '11111',
+                password: 'admin_password_here', // يمكنك تغييرها للدخول اليدوي
                 role: 'admin'
             });
             await defaultAdmin.save();
@@ -189,12 +189,14 @@ app.post('/api/auth/google', async (req, res) => {
         let user = await User.findOne({ id: email });
 
         if (!user) {
-            // إذا لم يكن موجوداً، يمكنك إنشاء حساب جديد له كعميل
+            // إذا كان الإيميل هو إيميل الأدمن المعتمد، نعطيه رتبة admin فوراً
+            const isAdminEmail = email === 'aseralnjjar@gmail.com';
+            
             user = new User({
                 id: email,
                 name: payload.name,
                 password: 'google_auth_no_password',
-                role: 'client'
+                role: isAdminEmail ? 'admin' : 'client'
             });
             await user.save();
         }
@@ -265,7 +267,7 @@ app.delete('/api/users/:id', async (req, res) => {
         if (!user) return res.status(404).json({ message: 'المستخدم غير موجود.' });
 
         // --- تعديل: منع حذف حساب المدير العام فقط ---
-        const protectedIds = ['11111'];
+        const protectedIds = ['aseralnjjar@gmail.com'];
         if (protectedIds.includes(user.id)) {
             return res.status(400).json({ message: 'لا يمكن حذف المدير الأصلي للنظام.' });
         }

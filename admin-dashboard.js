@@ -13,6 +13,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const SERVER_URL = 'https://webcraft-bw34.onrender.com'; // الرابط الفعلي المحدث
     let allOrders = [];
 
+    // --- التحقق من الصلاحيات وعرض بيانات المدير ---
+    const user = JSON.parse(sessionStorage.getItem('currentUser'));
+    if (!user || user.role !== 'admin') {
+        window.location.href = 'index.html';
+        return;
+    }
+    document.getElementById('adminLastLogin').textContent = `آخر دخول: ${new Date(user.lastLogin).toLocaleString('ar-EG')}`;
+
     // --- دالة لجلب وعرض الطلبات ---
     async function loadAdminData() {
         try {
