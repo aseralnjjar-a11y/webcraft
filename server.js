@@ -214,7 +214,7 @@ app.post('/api/auth/google', async (req, res) => {
         user.lastLogin = new Date();
         await user.save();
 
-        res.json({ user, redirectTo: dashboardPages[user.role] });
+        res.json({ user, redirectTo: getRedirectPage(user.role) });
     } catch (error) {
         console.error('❌ Google Auth Full Error:', error);
         res.status(401).json({ message: 'فشل التحقق من حساب جوجل: ' + error.message });
@@ -232,7 +232,7 @@ app.post('/api/login', async (req, res) => {
     user.lastLogin = new Date();
     await user.save();
 
-    res.json({ message: 'تم تسجيل الدخول بنجاح', user: user, redirectTo: dashboardPages[user.role] });
+    res.json({ message: 'تم تسجيل الدخول بنجاح', user: user, redirectTo: getRedirectPage(user.role) });
 });
 
 app.post('/api/users', async (req, res) => {

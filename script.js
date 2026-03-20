@@ -1,68 +1,6 @@
 const SERVER_URL = 'https://webcraft-bw34.onrender.com'; // الرابط الفعلي من سجلات Render
 const mainNavbar = document.querySelector('.navbar-main');
 
-function openLoginDialog(role) { // أعدنا role مؤقتاً للتوافق مع الاستدعاء القديم
-    const dialog = document.getElementById('loginDialog');
-    dialog.classList.add('visible');
-}
-function closeLoginDialog() {
-    const dialog = document.getElementById('loginDialog');
-    dialog.classList.remove('visible');
-}
-
-const authError = document.getElementById('dialogAuthError');
-
-// --- نظام جوجل لتسجيل الدخول ---
-function handleCredentialResponse(response) {
-    const token = response.credential;
-    
-    fetch(`${SERVER_URL}/api/auth/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: token })
-    })
-    .then(res => res.json())
-    .then(result => {
-        if (result.user) {
-            sessionStorage.setItem('currentUser', JSON.stringify(result.user));
-            if (result.redirectTo) {
-                window.location.href = result.redirectTo;
-            } else {
-                authError.textContent = 'خطأ في تحديد وجهة الدخول.';
-                authError.style.display = 'block';
-            }
-        } else {
-            authError.textContent = result.message || 'فشل تسجيل الدخول بجوجل.';
-            authError.style.display = 'block';
-        }
-    })
-    .catch((err) => {
-        console.error('Fetch Error:', err);
-        authError.textContent = 'خطأ في الاتصال بالخادم.';
-        authError.style.display = 'block';
-    });
-}
-
-function initGoogleAuth() {
-    if (typeof google !== 'undefined') {
-        google.accounts.id.initialize({
-            client_id: "377747466694-ov9o47r36odfd7j0mn4di0rldu08fc8g.apps.googleusercontent.com",
-            callback: handleCredentialResponse,
-            ux_mode: 'popup',
-            auto_select: false
-        });
-        google.accounts.id.renderButton(
-            document.getElementById("googleBtn"),
-            { 
-                theme: "filled_blue", 
-                size: "large", 
-                width: 350, 
-                text: "signin_with" 
-            }
-        );
-    }
-}
-
 // --- نظام التحريك عند التمرير الموحد ---
 function handleReveal() {
     const reveals = document.querySelectorAll(".reveal");
@@ -99,7 +37,7 @@ async function loadProjects() {
         
         if (loader) loader.remove();
 
-        if (projects.length === 0) {
+        if (!projects || projects.length === 0) {
             container.innerHTML = '<p class="text-center opacity-50">لا توجد مشاريع مضافة حالياً.</p>';
             return;
         }
@@ -166,9 +104,43 @@ function initMatrixEffect() {
     setInterval(draw, 50); // سرعة حركة متزنة
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    loadProjects();
+// --- دالة الانتقال السلس بين الصفحات ---
+function handlePageTransition(url) {
+    const loader = document.getElementById('mainPreloader');
+    if (loader) {
+        loader.classList.add('active'); // إعادة إظهار شاشة التحميل
+        setTimeout(() => {
+            window.location.href = url;
+        }, 800); // انتظار 0.8 ثانية لاكتمال الأنيميشن
+    } else {
+        window.location.href = url;
+    }
+}
+
+// تعريف الدالة المستخدمة في أزرار الباقات
+window.openLoginDialog = function() {
+    handlePageTransition('login.html');
+};
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadProjects();
     handleReveal();
     initMatrixEffect();
-    setTimeout(initGoogleAuth, 1000); // إعطاء وقت للمكتبة للتحميل
+
+    // إخفاء شاشة التحميل بعد تحميل المحتوى
+    const preloader = document.getElementById('mainPreloader');
+    if (preloader) {
+        // تأخير بسيط لإعطاء إحساس بالنعومة
+        setTimeout(() => {
+            preloader.classList.remove('active');
+        }, 300);
+    }
+
+    // تفعيل الانتقال السلس لجميع الروابط المؤدية لصفحة الدخول
+    document.querySelectorAll('a[href="login.html"]').forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault(); // منع الانتقال الفوري
+            handlePageTransition('login.html');
+        });
+    });
 });

@@ -1,0 +1,358 @@
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+    --secondary: #a855f7;
+    --bg-body: #020617; 
+    --bg-form-panel: #0f172a;
+    --bg-card: rgba(30, 41, 59, 0.5);
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --grad-linear: linear-gradient(to left, var(--primary), var(--secondary));
+    --shadow-glow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    --transition-smooth: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Tajawal', sans-serif;
+}
+
+/* --- Main Layout --- */
+.login-split-page {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    overflow: hidden;
+    min-height: 100vh;
+    animation: fadeInPage 1s ease-in-out;
+}
+
+@keyframes fadeInPage {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.login-split-container {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+/* --- Left Visual Panel --- */
+.login-visual-panel {
+    flex-basis: 55%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    padding: 2rem;
+    background-color: var(--bg-body);
+    background-image: radial-gradient(circle at 15% 20%, rgba(168, 85, 247, 0.15) 0%, transparent 40%), 
+                      radial-gradient(circle at 85% 70%, rgba(99, 102, 241, 0.1) 0%, transparent 40%);
+}
+
+.visual-content {
+    position: relative;
+    z-index: 5;
+    text-align: center;
+    max-width: 450px;
+}
+
+.visual-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    line-height: 1.3;
+}
+
+.visual-subtext {
+    color: var(--text-muted);
+    font-size: 1.1rem;
+    line-height: 1.7;
+}
+
+/* --- Right Form Panel --- */
+.login-form-panel {
+    flex-basis: 45%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    background: var(--bg-form-panel);
+}
+
+.login-card-modern {
+    width: 100%;
+    max-width: 420px;
+}
+
+.brand-logo {
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.gradient-text {
+    background: var(--grad-linear);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.form-header h1 {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.form-header p {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* --- Floating Label Inputs --- */
+.form-group-floating {
+    position: relative;
+    margin-bottom: 1.5rem;
+}
+
+.form-control-login {
+    width: 100%;
+    background: rgba(15, 23, 42, 0.8);
+    border: 1px solid var(--glass-border);
+    border-radius: 14px;
+    padding: 1rem 3rem 1rem 1rem;
+    color: white;
+    outline: none;
+    transition: var(--transition-smooth);
+    font-size: 1rem;
+    height: 58px;
+}
+
+.form-group-floating label {
+    position: absolute;
+    top: 1.1rem;
+    right: 3rem;
+    color: var(--text-muted);
+    pointer-events: none;
+    transition: all 0.2s ease-out;
+    background: transparent;
+    padding: 0 5px;
+}
+
+.form-control-login:focus,
+.form-control-login:not(:placeholder-shown) {
+    border-color: var(--primary);
+    box-shadow: 0 0 20px rgba(99, 102, 241, 0.2);
+    background: rgba(30, 41, 59, 0.7);
+}
+
+.form-control-login:focus + label,
+.form-control-login:not(:placeholder-shown) + label {
+    top: -0.7rem;
+    right: 0.8rem;
+    font-size: 0.8rem;
+    color: var(--primary);
+    background: var(--bg-form-panel);
+}
+
+.input-icon {
+    position: absolute;
+    top: 50%;
+    right: 1.2rem;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    transition: 0.3s;
+    pointer-events: none;
+}
+
+.form-control-login:focus ~ .input-icon {
+    color: var(--primary);
+}
+
+.password-toggle {
+    position: absolute;
+    left: 1.2rem;
+    right: auto;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    z-index: 2;
+    padding: 5px;
+}
+
+.password-toggle:hover {
+    color: var(--primary);
+}
+
+/* --- Form Options & Buttons --- */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+.forgot-pass {
+    color: var(--primary);
+    text-decoration: none;
+}
+.forgot-pass:hover { text-decoration: underline; }
+
+.remember-me {
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.btn-login-modern {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 14px;
+    border: none;
+    background: var(--grad-linear);
+    color: white;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: var(--transition-smooth);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.25);
+}
+
+.btn-login-modern:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 25px rgba(99, 102, 241, 0.4);
+    filter: brightness(1.1);
+}
+
+/* --- Divider & Social Login --- */
+.divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin: 2rem 0;
+}
+.divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--glass-border);
+}
+.divider:not(:empty)::before { margin-left: .5em; }
+.divider:not(:empty)::after { margin-right: .5em; }
+
+.social-login {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.social-btn {
+    width: 50px; height: 50px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--glass-border);
+    color: white;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: 0.3s;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.social-btn:hover {
+    background: var(--primary);
+    transform: translateY(-5px);
+    border-color: var(--primary);
+}
+
+.auth-footer {
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.auth-footer a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+}
+.auth-footer a:hover { text-decoration: underline; }
+
+/* --- Floating Cards on Visual Panel --- */
+.floating-card {
+    position: absolute;
+    background: rgba(30, 41, 59, 0.4);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+    animation: float 15s infinite ease-in-out;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    gap: 0.5rem;
+    transition: transform 0.5s ease-out; /* For parallax */
+}
+
+.floating-card i {
+    font-size: 2rem;
+    background: var(--grad-linear);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 0.5rem;
+}
+
+.floating-card p {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.floating-card.card-1 { width: 180px; height: 180px; top: 15%; left: 10%; animation-duration: 18s; animation-delay: -5s; }
+.floating-card.card-2 { width: 160px; height: 160px; bottom: 12%; right: 15%; animation-duration: 22s; }
+.floating-card.card-3 { width: 150px; height: 150px; top: 55%; left: 20%; animation-duration: 16s; animation-delay: -10s; }
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(5deg); }
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 992px) {
+    .login-split-container {
+        flex-direction: column;
+    }
+    .login-visual-panel {
+        display: none; /* Hide visual panel on mobile for focus */
+    }
+    .login-form-panel {
+        flex-basis: 100%;
+        min-height: 100vh;
+    }
+}
