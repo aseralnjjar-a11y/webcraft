@@ -1541,6 +1541,67 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
 .modal-header { border-bottom: 1px solid var(--glass-border); }
 .modal-title { color: white; font-weight: 700; }
 
+.service-selection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: 15px;
+}
+
+.service-card {
+    cursor: pointer;
+    position: relative;
+}
+
+.service-card input {
+    position: absolute;
+    opacity: 0;
+    width: 0; height: 0;
+}
+
+.service-card .card-content {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+    transition: var(--transition-smooth);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    backdrop-filter: blur(5px);
+}
+
+.service-card .card-content i {
+    font-size: 1.6rem;
+    color: var(--card-color);
+    transition: var(--transition-smooth);
+}
+
+.service-card .card-content span {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.service-card:hover .card-content {
+    background: rgba(255, 255, 255, 0.06);
+    transform: translateY(-5px);
+    border-color: var(--card-color);
+}
+
+.service-card input:checked + .card-content {
+    background: var(--card-color);
+    border-color: var(--card-color);
+    color: white;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 0 20px var(--card-color);
+}
+
+.service-card input:checked + .card-content i {
+    color: white;
+    transform: scale(1.1);
+}
+
 .sidebar-overlay {
     position: fixed;
     inset: 0;
@@ -1580,5 +1641,4 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
     #sidebarToggleBtn {
         padding: 0.5rem 0.8rem;
     }
-}
 }
