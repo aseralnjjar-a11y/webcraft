@@ -361,13 +361,18 @@ app.post('/api/auth/reset-password', async (req, res) => {
 
 // --- دالة مساعدة داخلية لإرسال الإيميل ---
 async function sendEmailInternal(to, subject, text) {
+    // التحقق مما إذا كان البريد هو جيميل لاستخدام الإعدادات التلقائية
+    const isGmail = process.env.SMTP_USER && process.env.SMTP_USER.includes('@gmail.com');
+
     const transporter = nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
-        port: parseInt(process.env.SMTP_PORT || '587', 10),
-        secure: process.env.SMTP_SECURE === 'true',
+        // إذا كان جيميل، نستخدم الخدمة الجاهزة (service: 'gmail')
+        service: isGmail ? 'gmail' : undefined,
+        host: isGmail ? undefined : process.env.SMTP_HOST,
+        port: isGmail ? undefined : parseInt(process.env.SMTP_PORT || '587', 10),
+        secure: isGmail ? undefined : (process.env.SMTP_SECURE === 'true'),
         auth: {
             user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
+            pass: process.env.SMTP_PASS, // هنا نضع "كلمة مرور التطبيق" الـ 16 حرف
         },
     });
 
