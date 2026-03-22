@@ -20,7 +20,11 @@ function handleCredentialResponse(response) {
     })
         .then((res) => res.json())
         .then((result) => {
-            if (result.user && result.redirectTo) {
+            if (result.isNew) {
+                // --- جديد: توجيه المستخدم الجديد لصفحة تعيين كلمة المرور ---
+                window.location.href = `complete-profile.html?email=${encodeURIComponent(result.email)}`;
+            } 
+            else if (result.user && result.redirectTo) {
                 sessionStorage.setItem('currentUser', JSON.stringify(result.user));
                 window.location.href = result.redirectTo;
             } else {

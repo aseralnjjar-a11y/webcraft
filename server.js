@@ -204,25 +204,48 @@ app.post('/api/auth/google', async (req, res) => {
         const isAdminEmail = email === 'aseralnjjar@gmail.com';
         let user = await User.findOne({ id: email });
 
+        // حالة 1: مستخدم جديد (تسجيل لأول مرة)
         if (!user) {
             user = new User({
                 id: email,
                 name: payload.name,
-                password: 'google_auth_no_password',
-                role: isAdminEmail ? 'admin' : 'client'
+                password: 'google_auth_placeholder', // كلمة مرور مؤقتة
+                role: isAdminEmail ? 'admin' : 'client',
+                isVerified: true // حسابات جوجل مفعلة تلقائياً
             });
-        } else if (isAdminEmail && user.role !== 'admin') {
+            await user.save();
+            // نرسل إشارة للفرونت إند أن هذا مستخدم جديد ليتم توجيهه لصفحة تعيين كلمة المرور
+            return res.json({ isNew: true, email: email });
+        } 
+        
+        // حالة 2: مستخدم موجود
+        if (isAdminEmail && user.role !== 'admin') {
             // ترقية الحساب إذا كان مسجلاً مسبقاً كعميل
             user.role = 'admin';
         }
 
-        user.lastLogin = new Date();
         await user.save();
 
         res.json({ user, redirectTo: getRedirectPage(user.role) });
     } catch (error) {
         console.error('❌ Google Auth Full Error:', error);
         res.status(401).json({ message: 'فشل التحقق من حساب جوجل: ' + error.message });
+    }
+});
+
+// --- مسار جديد: إكمال الملف الشخصي (تعيين كلمة المرور لمستخدمي جوجل) ---
+app.post('/api/auth/complete-profile', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await User.findOne({ id: email });
+        if (!user) return res.status(404).json({ message: 'المستخدم غير موجود' });
+
+        user.password = password; // تحديث كلمة المرور
+        await user.save();
+
+        res.json({ message: 'تم تحديث البيانات', user, redirectTo: getRedirectPage(user.role) });
+    } catch (error) {
+        res.status(500).json({ message: 'حدث خطأ أثناء الحفظ' });
     }
 });
 
@@ -279,9 +302,11 @@ app.post('/api/users', async (req, res) => {
 
         res.status(201).json(newUser);
     } catch (error) {
-        console.error("Signup Error:", error);
+        // --- تحسين الـ Log لمعرفة سبب خطأ الإيميل ---
+        console.error("❌ Signup Error Details:", error); 
         if (error.code === 11000) return res.status(400).json({ message: 'رقم العضوية مستخدم بالفعل.' });
-        res.status(400).json({ message: 'فشلت إضافة المستخدم.' });
+        // إرجاع رسالة الخطأ الأصلية إذا كانت المشكلة من الإيميل
+        res.status(500).json({ message: 'حدث خطأ أثناء إرسال البريد: ' + (error.message || 'خطأ غير معروف') });
     }
 });
 
@@ -377,7 +402,8 @@ async function sendEmailInternal(to, subject, text) {
     });
 
     await transporter.sendMail({
-        from: `Web Craft Security <${process.env.SMTP_USER}>`,
+        // تصحيح هام: يجب أن يكون "From" مطابقاً تماماً للمستخدم المصادق عليه في Gmail لتجنب الأخطاء
+        from: `"Web Craft Security" <${process.env.SMTP_USER}>`,
         to: to,
         subject: subject,
         text: text,

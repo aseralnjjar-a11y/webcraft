@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إكمال بيانات الحساب | Web Craft</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="login-mascot-page auth-split-page">
+
+    <div class="login-page-wrapper justify-content-center align-items-center w-100">
+        <div class="login-card-modern" style="max-width: 500px; width: 90%;">
+            <div class="text-center mb-4">
+                <h2 class="fw-bold text-white tracking-tight">WEB<span class="text-grad">CRAFT</span></h2>
+                <h4 class="fw-bold text-white mt-4 mb-2">إكمال إعداد الحساب</h4>
+                <p class="text-muted-custom small">لضمان أمان حسابك، يرجى تعيين كلمة مرور للدخول بها مستقبلاً.</p>
+            </div>
+
+            <form id="completeProfileForm">
+                <input type="hidden" id="googleEmail">
+                
+                <div class="form-group-animated mb-3">
+                    <input type="password" id="newPassword" class="form-control-animated" placeholder=" " required minlength="6">
+                    <label for="newPassword">كلمة المرور الجديدة</label>
+                </div>
+
+                <div class="form-group-animated mb-4">
+                    <input type="password" id="confirmNewPassword" class="form-control-animated" placeholder=" " required>
+                    <label for="confirmNewPassword">تأكيد كلمة المرور</label>
+                </div>
+
+                <div id="msgBox" class="alert py-2 mb-4 text-center small rounded-3" style="display:none;"></div>
+
+                <button type="submit" class="btn-login-animated w-100">
+                    حفظ ومتابعة
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const SERVER_URL = 'https://webcraft-bw34.onrender.com';
+        const form = document.getElementById('completeProfileForm');
+        const msgBox = document.getElementById('msgBox');
+        const btn = form.querySelector('button');
+
+        // جلب الإيميل من الرابط
+        const urlParams = new URLSearchParams(window.location.search);
+        const email = urlParams.get('email');
+        if(email) document.getElementById('googleEmail').value = email;
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const password = document.getElementById('newPassword').value;
+            const confirm = document.getElementById('confirmNewPassword').value;
+            const targetEmail = document.getElementById('googleEmail').value;
+
+            if (password !== confirm) {
+                msgBox.textContent = 'كلمات المرور غير متطابقة.';
+                msgBox.className = 'alert alert-danger';
+                msgBox.style.display = 'block';
+                return;
+            }
+
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الحفظ...';
+            btn.disabled = true;
+
+            try {
+                const response = await fetch(`${SERVER_URL}/api/auth/complete-profile`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: targetEmail, password: password })
+                });
+                
+                const result = await response.json();
+
+                if (response.ok) {
+                    // حفظ بيانات المستخدم للدخول التلقائي
+                    sessionStorage.setItem('currentUser', JSON.stringify(result.user));
+                    window.location.href = result.redirectTo;
+                } else {
+                    msgBox.textContent = result.message;
+                    msgBox.className = 'alert alert-danger';
+                    msgBox.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerHTML = 'حفظ ومتابعة';
+                }
+            } catch (error) {
+                msgBox.textContent = 'خطأ في الاتصال بالخادم';
+                msgBox.className = 'alert alert-danger';
+                msgBox.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = 'حفظ ومتابعة';
+            }
+        });
+    </script>
+</body>
+</html>
