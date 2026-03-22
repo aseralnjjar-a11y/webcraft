@@ -424,6 +424,19 @@ app.get('/api/teacher/students', async (req, res) => {
     res.json(students);
 });
 
+// --- مسار مؤقت: تصفير جميع المستخدمين (حذف الكل) ---
+// تنبيه: استخدم هذا الرابط مرة واحدة ثم احذف الكود للامان
+app.delete('/api/debug/reset-all-users', async (req, res) => {
+    try {
+        await User.deleteMany({}); // حذف كل المستخدمين بلا استثناء
+        await createDefaultAdminIfNeeded(); // إعادة إنشاء المدير العام الافتراضي فوراً
+        console.log('⚠️ تم تصفير قاعدة البيانات وحذف جميع المستخدمين.');
+        res.json({ message: 'تم حذف جميع المستخدمين بنجاح وإعادة ضبط النظام.' });
+    } catch (error) {
+        res.status(500).json({ message: 'حدث خطأ أثناء التصفير.' });
+    }
+});
+
 app.delete('/api/users/:id', async (req, res) => {
     try {
         const user = await User.findOne({ id: req.params.id });
