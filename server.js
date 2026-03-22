@@ -358,9 +358,9 @@ app.post('/api/auth/forgot-password', async (req, res) => {
         res.json({ message: 'تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني.' });
     } catch (error) {
         console.error("Forgot Password Error:", error);
-        // تحسين عرض الخطأ: إذا كانت المشكلة في الاتصال بجوجل
-        const msg = error.message.includes('Missing') ? error.message : 'فشل إرسال البريد: تأكد من إعدادات SMTP في Render.';
-        res.status(500).json({ message: msg + ' (' + (error.code || '') + ')' });
+        // --- وضع التصحيح (Debug Mode) ---
+        // إرجاع رسالة الخطأ الأصلية من جوجل لمعرفة السبب الحقيقي
+        res.status(500).json({ message: 'Google SMTP Error: ' + error.message });
     }
 });
 
@@ -860,7 +860,14 @@ async function startServer() {
 
         // التحقق من إعدادات البريد وطباعة رسالة تأكيد
         if (process.env.SMTP_USER && process.env.SMTP_PASS) {
-            console.log(`✅ خدمة البريد الإلكتروني مفعلة للحساب: ${process.env.SMTP_USER}`);
+            // فحص دقيق للمتغيرات (بدون طباعة كلمة المرور)
+            const passLength = process.env.SMTP_PASS.length;
+            const userLength = process.env.SMTP_USER.length;
+            console.log(`✅ إعدادات البريد:`);
+            console.log(`   - الإيميل: ${process.env.SMTP_USER} (الطول: ${userLength})`);
+            console.log(`   - الباسورد: ${passLength === 16 ? '✅ الطول صحيح (16)' : '❌ الطول غير صحيح (' + passLength + ') - يجب أن يكون 16 حرفاً بدون مسافات'}`);
+            
+            if (passLength !== 16) console.warn('⚠️ تحذير: كلمة مرور التطبيق في Gmail يجب أن تكون 16 حرفاً. تأكد من عدم وجود مسافات إضافية في Render.');
         } else {
             console.warn('⚠️ تنبيه: إعدادات البريد الإلكتروني (SMTP) مفقودة.');
         }
