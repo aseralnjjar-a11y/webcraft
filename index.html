@@ -31,7 +31,6 @@
                     <li class="nav-item"><a class="nav-link" href="#features">المميزات</a></li>
                     <li class="nav-item"><a class="nav-link" href="#services">خدماتنا</a></li>
                     <li class="nav-item"><a class="nav-link" href="#pricing">الباقات</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#portfolio">أعمالنا</a></li>
                     <li class="nav-item"><a class="nav-link" href="#contact">تواصل معنا</a></li>
                 </ul>
                 <a href="login.html" class="btn btn-modern btn-primary-grad ms-lg-3">دخول العملاء</a>
@@ -49,24 +48,40 @@
         
         <div class="container position-relative" style="z-index: 1;">
             <div class="row align-items-center min-vh-100 py-5">
-                <div class="col-lg-7 reveal active hero-content-glass">
-                    <span class="badge rounded-pill mb-3 px-3 py-2 animate-fade-in" style="background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.2); color: var(--accent-primary); font-weight: 700;">
-                        <i class="fas fa-sparkles me-1"></i> ريادة الحلول الرقمية 2024
+                <div class="col-12 col-lg-7 reveal active hero-content-glass">
+                    <span class="badge rounded-pill mb-3 px-3 py-2 animate-fade-in hero-badge-pill">
+                        <i class="fas fa-sparkles me-1"></i> ريادة الحلول الرقمية 2025
                     </span>
                     <h1 class="hero-title mb-4">المستقبل الرقمي<br><span class="text-grad">يبدأ من هنا</span></h1>
-                    <p class="lead text-muted-custom mb-5 fs-5 lh-base w-75">نصمم واجهات فائقة الأداء وتطبيقات ذكية تساعد الشركات الناشئة والمؤسسات الكبرى على النمو بسرعة الصاروخ.</p>
+                    <p class="lead text-muted-custom mb-5 fs-5 lh-base hero-lead-text">نصمم واجهات فائقة الأداء وتطبيقات ذكية تساعد الشركات الناشئة والمؤسسات الكبرى على النمو بسرعة الصاروخ.</p>
                     <div class="d-flex flex-wrap gap-3">
                         <a href="#contact" class="btn btn-modern btn-primary-grad shadow-lg">
                             ابدأ مشروعك <i class="fas fa-arrow-left ms-2"></i>
                         </a>
-                        <a href="#portfolio" class="btn btn-modern btn-outline-light">
-                             شاهد أعمالنا
-                        </a>
                     </div>
+                    <!-- فيسبوك — يظهر على الجوال (البانر مخفي على الشاشات الصغيرة) -->
+                    <a href="https://www.facebook.com/share/1CKaDAPBbR/" target="_blank" rel="noopener noreferrer" class="hero-fb-mobile-chip d-md-none mt-4">
+                        <i class="fab fa-facebook-f"></i>
+                        <span>اضغط هنا للانتقال لصفحة الفيس بوك</span>
+                        <i class="fas fa-arrow-left"></i>
+                    </a>
                 </div>
-                <div class="col-lg-5 d-none d-lg-block">
-                    <div class="hero-img-wrapper">
-                        <img src="https://cdni.iconscout.com/illustration/premium/thumb/web-development-2910117-2419282.png" class="img-fluid floating-animation hero-main-img" alt="Digital Innovation">
+                <div class="col-12 col-md-10 col-lg-5 mx-auto d-none d-md-block mt-4 mt-lg-0">
+                    <div class="hero-img-wrapper hero-brand-showcase">
+                        <a href="https://www.facebook.com/share/1CKaDAPBbR/" target="_blank" rel="noopener noreferrer" class="hero-brand-fb-link" aria-label="اضغط للانتقال إلى صفحة Web Craft على فيسبوك">
+                            <span class="hero-brand-frame" aria-hidden="true"></span>
+                            <span class="hero-brand-glow" aria-hidden="true"></span>
+                            <div class="hero-brand-card">
+                                <div class="hero-brand-card-inner">
+                                    <img src="images/baner.png" class="img-fluid hero-brand-logo" alt="شعار الشركة Web Craft" loading="eager">
+                                </div>
+                                <div class="hero-brand-cta-bar">
+                                    <span class="hero-brand-cta-icon"><i class="fab fa-facebook-f" aria-hidden="true"></i></span>
+                                    <span class="hero-brand-cta-label">اضغط هنا للانتقال لصفحة الفيس بوك</span>
+                                    <span class="hero-brand-cta-arrow"><i class="fas fa-arrow-left" aria-hidden="true"></i></span>
+                                </div>
+                            </div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -76,6 +91,10 @@
     <!-- Features Section (New) -->
     <section id="features" class="section-padding reveal">
         <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold display-6 mb-3">لماذا يختارنا العملاء</h2>
+                <p class="text-muted-custom mx-auto mb-0 features-section-lead">نجمع بين الأداء والتصميم لنقدم منتجاً رقمياً يدوم.</p>
+            </div>
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="feature-grid-item">
@@ -145,17 +164,48 @@
         </div>
     </section>
 
-    <!-- Portfolio Section -->
-    <section id="portfolio" class="section-padding reveal">
+    <!-- Comments / Feedback System Section -->
+    <section id="feedback" class="section-padding reveal">
         <div class="container py-5">
             <div class="text-center mb-5">
-                <h2 class="fw-bold">مشاريع نعتز بها</h2>
-                <p class="opacity-75">نماذج من أعمالنا البرمجية التي ساهمت في نجاح عملائنا</p>
+                <h2 class="fw-bold display-6 mb-3">شاركنا تجربتك</h2>
+                <p class="text-muted-custom mx-auto mb-0" style="max-width: 600px;">رأيك يهمنا ويساهم في تطوير خدماتنا. كن جزءاً من قصص نجاحنا.</p>
             </div>
-            <div class="row g-4" id="portfolioContainer">
-                <!-- سيتم ملؤه ديناميكياً بواسطة JS -->
-                <div class="col-12 text-center py-5" id="portfolioLoader">
-                    <div class="spinner-border text-primary" role="status"></div>
+            
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="contact-form-container position-relative overflow-hidden">
+                        <!-- تأثير جمالي خفيف في الخلفية -->
+                        <div class="hero-glow-blob blob-1" style="width: 200px; height: 200px; opacity: 0.2; top: -20px; right: -20px;"></div>
+                        
+                        <form id="commentForm">
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <div class="input-group-modern">
+                                        <input type="text" id="commentName" required placeholder="الاسم الكريم">
+                                        <i class="fas fa-user icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="input-group-modern">
+                                        <input type="email" id="commentEmail" required placeholder="البريد الإلكتروني">
+                                        <i class="fas fa-envelope icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col-12">
+                                    <div class="input-group-modern">
+                                        <textarea id="commentMessage" rows="4" required placeholder="اكتب تعليقك أو رسالتك هنا..."></textarea>
+                                        <i class="fas fa-comment-alt icon textarea-icon"></i>
+                                    </div>
+                                </div>
+                                <div class="col-12 text-center mt-4">
+                                    <button type="submit" class="btn btn-modern btn-primary-grad px-5 w-100 fs-5">
+                                        <i class="fas fa-paper-plane me-2"></i> إرسال التعليق
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
@@ -172,102 +222,41 @@
                 <div class="col-lg-4">
                     <div class="pricing-card">
                         <h4 class="fw-bold">الأساسية</h4>
-                        <div class="my-4"><span class="price-tag">2500</span> <span class="price-period">ر.س</span></div>
+                        <div class="my-4"><span class="price-tag fs-2">تواصل معنا</span> <span class="price-period d-block mt-2">لمعرفة السعر</span></div>
                         <ul class="list-unstyled pricing-features text-start mx-auto" style="max-width: 250px;">
                             <li><i class="fas fa-check"></i> موقع تعريفي صفحة واحدة</li>
                             <li><i class="fas fa-check"></i> تصميم متجاوب</li>
                             <li><i class="fas fa-check"></i> دعم فني لمدة شهر</li>
                         </ul>
-                        <button class="btn btn-outline-light rounded-pill w-100 mt-4" onclick="openLoginDialog()">اطلب الآن</button>
+                        <button class="btn btn-outline-light rounded-pill w-100 mt-4" onclick="openLoginDialog()">معرفة الأسعار</button>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="pricing-card popular">
                         <span class="badge bg-primary-grad position-absolute top-0 start-50 translate-middle px-3 py-2">الأكثر طلباً</span>
                         <h4 class="fw-bold text-grad">الاحترافية</h4>
-                        <div class="my-4"><span class="price-tag">5000</span> <span class="price-period">ر.س</span></div>
+                        <div class="my-4"><span class="price-tag fs-2">تواصل معنا</span> <span class="price-period d-block mt-2">لمعرفة السعر</span></div>
                         <ul class="list-unstyled pricing-features text-start mx-auto" style="max-width: 250px;">
                             <li><i class="fas fa-check"></i> موقع متعدد الصفحات</li>
                             <li><i class="fas fa-check"></i> لوحة تحكم ديناميكية</li>
                             <li><i class="fas fa-check"></i> تهيئة لمحركات البحث SEO</li>
                             <li><i class="fas fa-check"></i> دعم فني لمدة 3 أشهر</li>
                         </ul>
-                        <button class="btn btn-primary-grad rounded-pill w-100 mt-4" onclick="openLoginDialog()">اطلب الآن</button>
+                        <button class="btn btn-primary-grad rounded-pill w-100 mt-4" onclick="openLoginDialog()">معرفة الأسعار</button>
                     </div>
                 </div>
                 <div class="col-lg-4">
                     <div class="pricing-card">
                         <h4 class="fw-bold">الشركات</h4>
-                        <div class="my-4"><span class="price-tag">12000</span> <span class="price-period">ر.س</span></div>
+                        <div class="my-4"><span class="price-tag fs-2">تواصل معنا</span> <span class="price-period d-block mt-2">لمعرفة السعر</span></div>
                         <ul class="list-unstyled pricing-features text-start mx-auto" style="max-width: 250px;">
                             <li><i class="fas fa-check"></i> متجر إلكتروني / منصة SaaS</li>
                             <li><i class="fas fa-check"></i> تطبيق جوال (Android/iOS)</li>
                             <li><i class="fas fa-check"></i> استضافة ودومين مجاني</li>
                             <li><i class="fas fa-check"></i> دعم فني لمدة سنة</li>
                         </ul>
-                        <button class="btn btn-outline-light rounded-pill w-100 mt-4" onclick="openLoginDialog()">تواصل معنا</button>
+                        <button class="btn btn-outline-light rounded-pill w-100 mt-4" onclick="openLoginDialog()">معرفة الأسعار</button>
                     </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials Section (New) -->
-    <section class="section-padding bg-black bg-opacity-50 reveal">
-        <div class="container">
-            <div class="text-center mb-5">
-                <h2 class="fw-bold">ماذا يقول عملاؤنا؟</h2>
-            </div>
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="testimonial-card">
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Client" class="client-avatar me-3">
-                            <div>
-                                <h5 class="fw-bold mb-0">أحمد الصالح</h5>
-                                <small class="text-muted-custom">المدير التنفيذي - شركة الأفق</small>
-                            </div>
-                            <div class="ms-auto text-warning"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        </div>
-                        <p class="text-muted-custom mb-0">"تجربة استثنائية مع Web Craft. الفريق محترف جداً وقدموا لنا منصة تفوقت على توقعاتنا من حيث السرعة والتصميم."</p>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="testimonial-card">
-                        <div class="d-flex align-items-center mb-3">
-                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Client" class="client-avatar me-3">
-                            <div>
-                                <h5 class="fw-bold mb-0">سارة العمري</h5>
-                                <small class="text-muted-custom">مؤسسة متجر إيليت</small>
-                            </div>
-                            <div class="ms-auto text-warning"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-                        </div>
-                        <p class="text-muted-custom mb-0">"ساعدونا في تحويل فكرتنا إلى تطبيق واقعي حقق نجاحاً كبيراً في السوق. خدمة الدعم الفني لديهم رائعة."</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Stats Section -->
-    <section id="stats" class="py-5 border-top border-bottom border-secondary border-opacity-10">
-        <div class="container py-5">
-            <div class="row">
-                <div class="col-md-3 col-6 stat-item">
-                    <span class="stat-number" data-target="150">0</span>
-                    <p class="text-muted-custom">مشروع ناجح</p>
-                </div>
-                <div class="col-md-3 col-6 stat-item">
-                    <span class="stat-number" data-target="80">0</span>
-                    <p class="text-muted-custom">عميل يثق بنا</p>
-                </div>
-                <div class="col-md-3 col-6 stat-item">
-                    <span class="stat-number" data-target="12">0</span>
-                    <p class="text-muted-custom">جائزة تقنية</p>
-                </div>
-                <div class="col-md-3 col-6 stat-item">
-                    <span class="stat-number" data-target="5">0</span>
-                    <p class="text-muted-custom">سنوات من الإبداع</p>
                 </div>
             </div>
         </div>
@@ -351,17 +340,11 @@
                 <div class="col-lg-4 mb-4 mb-lg-0">
                     <h3 class="fw-bold mb-3">WEB<span class="text-grad">CRAFT</span></h3>
                     <p class="text-muted-custom small mb-4">نحن شركة تقنية رائدة متخصصة في بناء الحلول الرقمية الذكية للمستقبل. نجمع بين الفن والهندسة لنقدم تجربة لا تُنسى.</p>
-                    <div>
-                        <a href="#" class="social-icon-btn"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="social-icon-btn"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#" class="social-icon-btn"><i class="fab fa-instagram"></i></a>
-                    </div>
                 </div>
                 <div class="col-lg-2 col-6 mb-4">
                     <h5 class="fw-bold text-white mb-3">الروابط</h5>
                     <a href="#hero" class="footer-link">الرئيسية</a>
                     <a href="#services" class="footer-link">الخدمات</a>
-                    <a href="#portfolio" class="footer-link">أعمالنا</a>
                     <a href="#pricing" class="footer-link">الباقات</a>
                 </div>
                 <div class="col-lg-2 col-6 mb-4">

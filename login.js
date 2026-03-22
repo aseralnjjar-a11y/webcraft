@@ -3,6 +3,7 @@ const SERVER_URL = 'https://webcraft-bw34.onrender.com';
 document.addEventListener('DOMContentLoaded', () => {
     initGoogleAuth();
     initManualLogin();
+    checkSignupSuccess();
 });
 
 /**
@@ -46,15 +47,15 @@ function initGoogleAuth() {
             ux_mode: 'popup',
         });
         google.accounts.id.renderButton(
-            document.getElementById("googleBtn"), 
-            { 
-                theme: "filled_blue",   // لون أزرق جذاب يتماشى مع الخلفية الداكنة
-                size: "large",          // حجم كبير وواضح
-                type: "standard",       // عرض الأيقونة مع النص
-                shape: "pill",          // حواف دائرية
-                text: "continue_with",  // نص "المتابعة باستخدام جوجل"
-                width: "400",           // جعل الزر عريضاً ليملأ المكان (سيتم تعديله تلقائياً حسب الشاشة)
-                logo_alignment: "left"
+            document.getElementById("googleBtn"),
+            {
+                theme: "outline",
+                size: "large",
+                type: "standard",
+                shape: "pill",
+                text: "continue_with",
+                width: 320,
+                logo_alignment: "right"
             }
         );
     } else {
@@ -109,4 +110,18 @@ function initManualLogin() {
             loginError.style.display = 'block';
         }
     });
+}
+
+/**
+ * Checks if the user was redirected from a successful signup
+ * and displays a success message.
+ */
+function checkSignupSuccess() {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('signup') === 'success') {
+        const loginError = document.getElementById('loginError');
+        loginError.textContent = 'تم إنشاء حسابك بنجاح! يمكنك الآن تسجيل الدخول.';
+        loginError.className = 'alert alert-success py-2 mb-4 text-center small rounded-3'; // Change class to success
+        loginError.style.display = 'block';
+    }
 }

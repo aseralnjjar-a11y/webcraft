@@ -27,6 +27,19 @@ body {
     overflow-x: hidden;
     line-height: 1.6;
     transition: background-color 0.4s ease, color 0.4s ease;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+}
+
+/* تأثير ضوضاء خفيف "Grain" ليعطي ملمس احترافي للخلفية */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    mix-blend-mode: overlay;
 }
 
 /* Typography & Utilities */
@@ -47,11 +60,20 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
 /* Hero Section */
 .hero-section {
     min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     align-items: center;
     background: var(--primary-bg);
     position: relative;
     overflow: hidden;
+    padding-top: 5.5rem;
+    padding-bottom: 2rem;
+}
+
+@media (min-width: 992px) {
+    .hero-section {
+        padding-top: 2rem;
+    }
 }
 
 /* Matrix Canvas Styling */
@@ -92,11 +114,235 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
     letter-spacing: -1.5px;
 }
 
+/* تأثير النص المتدرج المتحرك */
+.text-grad {
+    background: linear-gradient(to right, #7c3aed 0%, #db2777 25%, #22d3ee 50%, #7c3aed 75%, #db2777 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: textShine 4s linear infinite;
+}
+
+@keyframes textShine {
+    to { background-position: 200% center; }
+}
+
 .hero-img-wrapper {
     position: relative;
     transition: var(--transition-smooth);
 }
 
+/* نص الهيرو — عرض كامل على الجوال */
+.hero-lead-text {
+    max-width: 100%;
+}
+
+@media (min-width: 992px) {
+    .hero-lead-text {
+        max-width: 85%;
+    }
+}
+
+/* شعار البانر — ثابت وهادئ؛ حركة خفيفة فقط مع الماوس الدقيق (ليس اللمس) */
+.hero-brand-showcase {
+    padding: 0.35rem;
+}
+
+.hero-brand-fb-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    position: relative;
+    border-radius: 28px;
+    outline: none;
+    -webkit-tap-highlight-color: rgba(24, 119, 242, 0.15);
+}
+
+.hero-brand-fb-link:focus-visible {
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.7), 0 0 0 4px rgba(2, 6, 23, 1);
+    border-radius: 28px;
+}
+
+/* إطار ثابت بدون دوران */
+.hero-brand-frame {
+    position: absolute;
+    inset: -2px;
+    border-radius: 30px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.55), rgba(24, 119, 242, 0.4), rgba(236, 72, 153, 0.35));
+    z-index: 0;
+    opacity: 0.88;
+}
+
+.hero-brand-glow {
+    position: absolute;
+    inset: -12%;
+    background: radial-gradient(ellipse at 50% 40%, rgba(139, 92, 246, 0.22), transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+    filter: blur(16px);
+    opacity: 0.85;
+}
+
+.hero-brand-card {
+    position: relative;
+    z-index: 1;
+    border-radius: 26px;
+    overflow: hidden;
+    background: linear-gradient(165deg, rgba(255, 255, 255, 0.06) 0%, rgba(2, 6, 23, 0.94) 50%);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow:
+        0 20px 48px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.04) inset;
+    transition: box-shadow 0.35s ease, border-color 0.35s ease;
+}
+
+/* Hover: فقط على أجهزة بماوس دقيق — يمنع السلوك الغريب على اللمس */
+@media (hover: hover) and (pointer: fine) {
+    .hero-brand-fb-link:hover .hero-brand-card {
+        box-shadow:
+            0 24px 56px rgba(0, 0, 0, 0.45),
+            0 0 48px rgba(139, 92, 246, 0.12);
+        border-color: rgba(255, 255, 255, 0.16);
+    }
+
+    .hero-brand-fb-link:hover .hero-brand-frame {
+        opacity: 1;
+    }
+
+    .hero-brand-fb-link:hover .hero-brand-logo {
+        filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.35));
+    }
+
+    .hero-brand-fb-link:hover .hero-brand-cta-bar {
+        background: linear-gradient(90deg, rgba(24, 119, 242, 0.38), rgba(139, 92, 246, 0.32));
+    }
+}
+
+.hero-brand-card-inner {
+    padding: 1rem 1rem 0.35rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-brand-logo {
+    max-height: min(42vh, 380px);
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
+    transition: filter 0.3s ease;
+}
+
+.hero-brand-cta-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.55rem;
+    padding: 0.85rem 1rem;
+    background: linear-gradient(90deg, rgba(24, 119, 242, 0.2), rgba(139, 92, 246, 0.18));
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    font-size: clamp(0.78rem, 2.5vw, 0.88rem);
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 0.02em;
+    transition: background 0.3s ease;
+}
+
+.hero-brand-cta-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    background: #1877f2;
+    color: #fff;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+    box-shadow: 0 2px 10px rgba(24, 119, 242, 0.35);
+}
+
+.hero-brand-cta-label {
+    flex: 1;
+    text-align: center;
+    line-height: 1.4;
+}
+
+.hero-brand-cta-arrow {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+}
+
+@media (max-width: 991px) {
+    .hero-brand-logo {
+        max-height: min(38vh, 320px);
+    }
+
+    .hero-brand-card-inner {
+        padding: 0.85rem 0.85rem 0.25rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-brand-card,
+    .hero-brand-logo,
+    .hero-brand-cta-bar,
+    .hero-brand-frame {
+        transition: none;
+    }
+}
+
+/* لمس: رد فعل بسيط بدون قفزات */
+@media (pointer: coarse) {
+    .hero-brand-fb-link:active .hero-brand-card {
+        transform: scale(0.992);
+        transition: transform 0.12s ease;
+    }
+}
+
+/* شريط فيسبوك للجوال */
+.hero-fb-mobile-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.65rem 1.15rem;
+    border-radius: 999px;
+    background: linear-gradient(135deg, rgba(24, 119, 242, 0.25), rgba(139, 92, 246, 0.2));
+    border: 1px solid rgba(24, 119, 242, 0.35);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: var(--transition-smooth);
+}
+
+.hero-fb-mobile-chip .fab {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #1877f2;
+    border-radius: 50%;
+    font-size: 0.85rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+    .hero-fb-mobile-chip:hover {
+        color: #fff;
+        border-color: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 6px 20px rgba(24, 119, 242, 0.2);
+    }
+}
+
+.hero-fb-mobile-chip:active {
+    opacity: 0.92;
+    transform: scale(0.98);
+}
+
+/* احتياط إن وُجدت صنف hero-main-img قديم */
 .hero-main-img {
     filter: drop-shadow(0 0 40px rgba(139, 92, 246, 0.4));
     transition: var(--transition-smooth);
@@ -105,6 +351,30 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
 .hero-main-img:hover {
     filter: drop-shadow(0 0 60px rgba(6, 182, 212, 0.5));
     transform: scale(1.05) rotate(2deg);
+}
+
+/* بطاقة نص الهيرو — زجاجية متناسقة مع بقية الموقع */
+.hero-content-glass {
+    padding: 2rem 2.25rem;
+    border-radius: 28px;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
+}
+
+.hero-badge-pill {
+    background: rgba(139, 92, 246, 0.12) !important;
+    border: 1px solid rgba(139, 92, 246, 0.28) !important;
+    color: var(--accent-primary) !important;
+    font-weight: 700 !important;
+}
+
+@media (max-width: 991px) {
+    .hero-content-glass {
+        padding: 1.5rem 1.25rem;
+    }
 }
 
 /* Modern Cards */
@@ -153,12 +423,29 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
     background: var(--grad-linear);
     color: white !important;
     box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+/* تأثير اللمعة (Shine) عند مرور الماوس على الزر */
+.btn-primary-grad::after {
+    content: '';
+    position: absolute;
+    top: 0; left: -100%;
+    width: 100%; height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transition: 0.5s;
 }
 
 .btn-primary-grad:hover {
     transform: translateY(-3px) scale(1.02);
     box-shadow: 0 15px 40px rgba(139, 92, 246, 0.5), 0 0 15px var(--accent-primary);
     filter: brightness(1.1);
+}
+
+.btn-primary-grad:hover::after {
+    left: 100%;
+    transition: 0.5s ease-in-out;
 }
 
 /* Stats Section */
@@ -363,22 +650,51 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
 .text-grad { background: var(--grad-linear); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 .text-fuchsia { color: var(--vibrant-fuchsia); }
 
-/* Animations */
+/* Animations — حركة خفيفة؛ معطّلة عند تقليل الحركة أو على الشاشات الصغيرة */
 @keyframes float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-30px) rotate(3deg); }
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+    0% { transform: translate(0, 0) rotate(0deg); }
+    33% { transform: translate(20px, -30px) rotate(5deg); }
+    66% { transform: translate(-15px, 15px) rotate(-3deg); }
+    100% { transform: translate(0, 0) rotate(0deg); }
 }
-.floating-animation { animation: float 6s ease-in-out infinite; }
 
-/* Page Reveal */
+.floating-animation {
+    animation: float 7s ease-in-out infinite;
+    animation: float 15s ease-in-out infinite alternate;
+}
+
+@media (max-width: 767px), (prefers-reduced-motion: reduce) {
+    .floating-animation {
+        animation: none;
+    }
+}
+
+/* Page Reveal — أخف على الجوال */
 .reveal {
     opacity: 0;
-    transform: translateY(50px) scale(0.9);
-    transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    transform: translateY(28px);
+    transition: opacity 0.65s ease, transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+@media (min-width: 768px) {
+    .reveal {
+        transform: translateY(40px) scale(0.98);
+    }
+}
+
 .reveal.active {
     opacity: 1;
     transform: translateY(0) scale(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal {
+        opacity: 1;
+        transform: none;
+        transition: none;
+    }
 }
 
 /* Login Dialog Modern Styles */
@@ -472,12 +788,14 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
 .feature-grid-item {
     padding: 2rem;
     border-radius: 20px;
-    border: 1px solid transparent;
+    border: 1px solid var(--glass-border);
+    background: rgba(255, 255, 255, 0.02);
     transition: var(--transition-smooth);
 }
 .feature-grid-item:hover {
-    background: rgba(255,255,255,0.03);
-    border-color: var(--glass-border);
+    background: rgba(255,255,255,0.05);
+    border-color: rgba(139, 92, 246, 0.35);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
 }
 .feature-icon-small {
     width: 48px; height: 48px;
@@ -486,6 +804,12 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
     display: flex; align-items: center; justify-content: center;
     color: var(--accent-secondary);
     margin-bottom: 1rem;
+}
+
+.features-section-lead {
+    max-width: 520px;
+    font-size: 1.05rem;
+    line-height: 1.7;
 }
 
 /* Pricing Section */
@@ -1024,7 +1348,7 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
     animation: gradientBG 25s ease infinite;
     font-family: 'Tajawal', sans-serif;
     color: var(--text-main);
-    overflow: hidden;
+    overflow-x: hidden;
     min-height: 100vh;
     display: flex;
 }
@@ -1038,7 +1362,7 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
 .login-page-wrapper {
     display: flex;
     width: 100%;
-    height: 100vh;
+    min-height: 100vh;
 }
 
 .mascot-panel {
@@ -1053,8 +1377,6 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
 .login-panel {
     flex-basis: 45%;
     display: flex;
-    align-items: center;
-    justify-content: center;
     background: #020617; /* لون متصل لضمان الدمج مع تدرج الفيديو */
     position: relative;
     z-index: 10;
@@ -1062,6 +1384,7 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
     border-right: 1px solid rgba(255, 255, 255, 0.05);
     border-left: none; 
     box-shadow: -20px 0 50px rgba(0,0,0,0.5); /* ظل لعمق بصري */
+    min-height: 100vh;
 }
 
 .login-form-container {
@@ -1069,6 +1392,7 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
     max-width: 480px;
     padding: 3rem;
     animation: fadeInUp 0.8s ease-out;
+    margin: auto;
 }
 
 /* Video Background Styles */
@@ -1078,28 +1402,27 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
     width: 100%;
     height: 100%;
     object-fit: cover; /* Fills the container, may crop video */
-    opacity: 0.85; /* زيادة الوضوح قليلاً لأننا سنضع فلاتر فوقه */
-    filter: saturate(1.2) contrast(1.15) brightness(0.9); /* ألوان سينمائية */
+    opacity: 1;
+    filter: none;
     z-index: 0;
-    transition: transform 0.7s ease-out; /* نعومة في الحركة */
+    animation: slowZoom 20s ease-out forwards; /* تأثير التقارب البطيء */
 }
 
-/* حركة تكبير هادئة عند مرور الماوس لإعطاء حيوية */
-.mascot-panel:hover .background-video {
-    transform: scale(1.03); 
+/* تعريف حركة التقارب (Zoom) */
+@keyframes slowZoom {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.2); }
 }
 
 .video-overlay {
     position: absolute;
     inset: 0;
-    /* تدرج مركب: يدمج الحواف مع الأسود، ويضيف لمسة بنفسجية خفيفة جداً */
-    background: 
-        linear-gradient(to left, transparent 10%, #020617 100%), /* دمج قوي مع لوحة الدخول */
-        radial-gradient(circle at center, transparent 0%, rgba(2, 6, 23, 0.6) 90%), /* تعتيم الحواف (Vignette) */
-        linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.05)); /* مسحة لونية خفيفة */
+    /* تدرج أسود قوي جداً لدمج الفيديو وجعله غامقاً */
+    background: linear-gradient(to bottom, rgba(2, 6, 23, 0.3) 0%, rgba(2, 6, 23, 0.95) 100%);
     z-index: 1;
     pointer-events: none;
-    backdrop-filter: blur(2px); /* تمويه خفيف جداً يدمج "البكسلات" ويجعل الفيديو أنعم */
+    /* إزالة الشبكة وإضافة ظل داخلي عميق جداً (Vignette) */
+    box-shadow: inset 0 0 150px rgba(0,0,0,0.95);
 }
 
 .login-form-container {
@@ -1122,6 +1445,44 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
     color: white;
     font-size: 1rem;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Global Preloader / شاشة التحميل --- */
+.premium-loader-overlay {
+    position: fixed;
+    inset: 0;
+    background: #020617; /* نفس لون خلفية الصفحات ليكون الانتقال غير ملحوظ */
+    z-index: 999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s ease;
+    opacity: 0;
+    visibility: hidden;
+}
+
+.premium-loader-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.loader-logo {
+    font-size: 3.5rem;
+    letter-spacing: -2px;
+    /* --- جديد: تأثير النبض والتوهج للشعار --- */
+    animation: pulse-glow 2s infinite ease-in-out;
+}
+
+/* --- جديد: تعريف حركة النبض والتوهج --- */
+@keyframes pulse-glow {
+    0%, 100% {
+        transform: scale(1);
+        text-shadow: 0 0 15px rgba(139, 92, 246, 0.4), 0 0 30px rgba(139, 92, 246, 0.2);
+    }
+    50% {
+        transform: scale(1.05);
+        text-shadow: 0 0 25px rgba(139, 92, 246, 0.7), 0 0 50px rgba(139, 92, 246, 0.5);
+    }
 }
 
 .form-control-animated:focus {
@@ -1269,6 +1630,11 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
     .mascot-panel {
         min-height: 60vh; /* Give it more space on mobile */
     }
+    
+    .login-panel {
+        height: auto;
+        overflow-y: visible;
+    }
 
     .showcase-card {
         /* Make cards smaller on mobile */
@@ -1284,6 +1650,212 @@ h1, h2, h3, h4, h5, h6 { letter-spacing: -0.02em; }
         border-left: none;
         border-top: 1px solid var(--glass-border);
         padding: 2rem 1rem;
+    }
+}
+
+/* --- صفحة إنشاء الحساب: تمرير العمود، تباعد، زر جوجل لا يخرج عن العرض --- */
+.signup-page .signup-form-panel {
+    overflow-y: auto;
+    align-items: flex-start;
+    -webkit-overflow-scrolling: touch;
+}
+
+.signup-page .signup-form-scroll {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+.signup-page .signup-google-wrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.signup-page .signup-google-wrap > div,
+.signup-page #googleBtn {
+    max-width: 100%;
+}
+
+/* مساحة لزر العين (الموضع left في CSS) */
+.signup-page .form-input-with-toggle {
+    padding-left: 3rem;
+}
+
+.signup-page .password-strength-block {
+    min-height: 2.75rem;
+}
+
+/* === الدخول + التسجيل: لاب توب بحركة فتح، الفيديو يثبت بعدها === */
+.auth-showcase-panel.mascot-panel {
+    padding: 1.5rem 2rem !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.auth-showcase-panel.mascot-panel:hover .background-video {
+    transform: none;
+}
+
+.laptop-showcase {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 620px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+}
+
+.laptop-device {
+    width: 100%;
+    max-width: 540px;
+    transform-origin: 50% 100%;
+    pointer-events: none;
+    /* الحالة الأولية: مغلق (مطابقة لبداية الأنيميشن) لمنع الومضة */
+    transform: perspective(1100px) rotateX(32deg) translateY(6%) scale(0.86);
+    opacity: 0.75;
+}
+
+.laptop-device--animating {
+    animation: laptop-open-reveal 1.15s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+@keyframes laptop-open-reveal {
+    from {
+        transform: perspective(1100px) rotateX(32deg) translateY(6%) scale(0.86);
+        opacity: 0.75;
+    }
+    to {
+        transform: perspective(1100px) rotateX(0deg) translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.laptop-device--open {
+    transform: perspective(1100px) rotateX(0deg) translateY(0) scale(1);
+    opacity: 1;
+}
+
+.laptop-screen-outer {
+    border-radius: 20px 20px 6px 6px;
+    padding: 11px 12px 9px;
+    background: linear-gradient(155deg, #273549, #0f172a 55%, #020617);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.14),
+        0 28px 60px rgba(0, 0, 0, 0.55);
+}
+
+.laptop-screen-bezel {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    border-radius: 11px;
+    overflow: hidden;
+    background: #000;
+    border: 1px solid rgba(255, 255, 255, 0.1); /* إطار أنحف وأكثر دقة */
+    /* توهج خفيف حول الشاشة + ظل داخلي للعمق */
+    box-shadow: 
+        0 0 30px rgba(139, 92, 246, 0.15), 
+        inset 0 0 80px rgba(0, 0, 0, 0.95); /* زيادة عمق الظل الداخلي ليطابق صفحة الدخول */
+}
+
+/* تأثير الانعكاس الزجاجي على شاشة اللابتوب */
+.laptop-screen-bezel::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.03), rgba(2, 6, 23, 0.5)); /* تدرج داكن هادئ */
+    pointer-events: none;
+    z-index: 10;
+}
+
+.auth-showcase-panel .laptop-screen-bezel .background-video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 1;
+    filter: none;
+}
+
+.laptop-hinge {
+    height: 7px;
+    margin: 0 auto;
+    width: 24%;
+    border-radius: 0 0 5px 5px;
+    background: linear-gradient(180deg, #475569, #1e293b);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.laptop-base {
+    height: 16px;
+    border-radius: 5px 5px 18px 18px;
+    background: linear-gradient(180deg, #1e293b, #0c1222);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.laptop-base-track {
+    width: 28%;
+    max-width: 140px;
+    height: 4px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+}
+
+/* عمود النموذج: تمرير + زر جوجل */
+.auth-split-page .auth-form-panel {
+    overflow-y: auto;
+    align-items: flex-start;
+    -webkit-overflow-scrolling: touch;
+}
+
+.auth-split-page .auth-form-scroll {
+    padding-top: 1.75rem;
+    padding-bottom: 2.5rem;
+}
+
+.auth-split-page .auth-google-wrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.auth-split-page .auth-google-wrap > div,
+.auth-split-page #googleBtn {
+    max-width: 100%;
+}
+
+.auth-split-page .form-input-with-toggle {
+    padding-left: 3rem;
+}
+
+@media (max-width: 991px) {
+    .laptop-showcase {
+        max-width: 100%;
+        padding: 0.5rem;
+    }
+    .laptop-device {
+        max-width: 400px;
+    }
+}
+
+@media (max-width: 992px) {
+    .auth-showcase-panel.mascot-panel {
+        min-height: 44vh;
+        padding: 1.25rem 1rem !important;
     }
 }
 

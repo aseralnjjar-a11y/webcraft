@@ -25,41 +25,48 @@ window.addEventListener('scroll', () => {
     }
 });
 
-// --- جلب المشاريع من السيرفر وعرضها ديناميكياً ---
-async function loadProjects() {
-    const container = document.getElementById('portfolioContainer');
-    const loader = document.getElementById('portfolioLoader');
-    if (!container) return;
+// --- نظام التعليقات: إرسال النموذج ---
+function initCommentForm() {
+    const form = document.getElementById('commentForm');
+    if (!form) return;
 
-    try {
-        const response = await fetch(`${SERVER_URL}/api/projects`);
-        const projects = await response.json();
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
         
-        if (loader) loader.remove();
+        const btn = form.querySelector('button[type="submit"]');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i> جاري الإرسال...';
+        btn.disabled = true;
 
-        if (!projects || projects.length === 0) {
-            container.innerHTML = '<p class="text-center opacity-50">لا توجد مشاريع مضافة حالياً.</p>';
-            return;
+        const data = {
+            name: document.getElementById('commentName').value,
+            email: document.getElementById('commentEmail').value,
+            message: document.getElementById('commentMessage').value
+        };
+
+        try {
+            const response = await fetch(`${SERVER_URL}/api/comments`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            
+            if (response.ok) {
+                showToast('تم استلام تعليقك بنجاح! شكراً لمشاركتنا رأيك.', 'success');
+                form.reset();
+            } else {
+                showToast(result.message || 'حدث خطأ أثناء الإرسال.', 'danger');
+            }
+        } catch (error) {
+            showToast('خطأ في الاتصال بالخادم.', 'danger');
+            console.error(error);
+        } finally {
+            btn.innerHTML = originalText;
+            btn.disabled = false;
         }
-
-        projects.forEach(proj => {
-            const html = `
-                <div class="col-md-4">
-                    <div class="project-item">
-                        <img src="${proj.imageUrl || 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=500'}" class="img-fluid w-100 h-100 object-fit-cover" alt="${proj.title}">
-                        <div class="project-overlay">
-                            <span class="badge bg-info mb-2 w-fit">${proj.category}</span>
-                            <h5 class="fw-bold">${proj.title}</h5>
-                            <p class="small opacity-75">${proj.description || ''}</p>
-                            <a href="${proj.link || '#'}" class="btn btn-sm btn-light mt-2">عرض المشروع</a>
-                        </div>
-                    </div>
-                </div>
-            `;
-            container.insertAdjacentHTML('beforeend', html);
-        });
-        handleReveal(); // تفعيل التحريك للمشاريع الجديدة
-    } catch (e) { console.error("Error fetching projects", e); }
+    });
 }
 
 // --- نظام تأثير خيوط البرمجة (Matrix Effect) ---
@@ -123,7 +130,7 @@ window.openLoginDialog = function() {
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadProjects();
+    initCommentForm(); // تفعيل نموذج التعليقات
     handleReveal();
     initMatrixEffect();
 
@@ -136,11 +143,27 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 300);
     }
 
-    // تفعيل الانتقال السلس لجميع الروابط المؤدية لصفحة الدخول
-    document.querySelectorAll('a[href="login.html"]').forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault(); // منع الانتقال الفوري
-            handlePageTransition('login.html');
-        });
+    // تفعيل الانتقال السلس لجميع الروابط الداخلية (ما عدا الروابط بنفس الصفحة #)
+    document.querySelectorAll('a').forEach(link => {
+        const href = link.getAttribute('href');
+        if (href && !href.startsWith('#') && !href.startsWith('mailto:') && !href.startsWith('tel:') && link.target !== '_blank') {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                handlePageTransition(href);
+            });
+        }
     });
 });
+
+// دالة مساعدة لعرض التنبيهات (Toast)
+function showToast(message, type = 'primary') {
+    const toastEl = document.getElementById('orderToast');
+    if (!toastEl) return;
+    
+    const toastBody = document.getElementById('toastMessage');
+    toastBody.textContent = message;
+    toastEl.className = `toast align-items-center text-white border-0 bg-${type === 'success' ? 'success' : 'danger'}-glass`;
+    
+    const toast = new bootstrap.Toast(toastEl);
+    toast.show();
+}
