@@ -358,7 +358,8 @@ app.post('/api/auth/forgot-password', async (req, res) => {
         res.json({ message: 'تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني.' });
     } catch (error) {
         console.error("Forgot Password Error:", error);
-        res.status(500).json({ message: 'حدث خطأ في الخادم.' });
+        // تعديل: إظهار تفاصيل الخطأ للمستخدم لمعرفة السبب (مثل خطأ في كلمة مرور الإيميل)
+        res.status(500).json({ message: 'فشل إرسال البريد: ' + (error.message || 'خطأ غير معروف') });
     }
 });
 
