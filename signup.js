@@ -128,7 +128,15 @@ function initManualSignup() {
             const result = await response.json();
 
             if (response.ok) {
-                window.location.href = 'login.html?signup=success';
+                // تغيير: بدلاً من التوجيه المباشر، عرض رسالة التفعيل
+                signupForm.innerHTML = `
+                    <div class="text-center py-5">
+                        <i class="fas fa-envelope-open-text fa-4x text-accent-primary mb-4"></i>
+                        <h4 class="text-white mb-3">تم إنشاء الحساب بنجاح!</h4>
+                        <p class="text-muted-custom">لقد أرسلنا رابط تفعيل إلى بريدك الإلكتروني <strong>${email}</strong>.<br>يرجى التحقق من صندوق الوارد (أو الرسائل غير المرغوب فيها) لتفعيل حسابك وتسجيل الدخول.</p>
+                        <a href="login.html" class="btn btn-primary-grad w-100 mt-4">العودة لصفحة الدخول</a>
+                    </div>
+                `;
             } else {
                 signupError.textContent = result.message || 'فشل إنشاء الحساب.';
                 signupError.style.display = 'block';

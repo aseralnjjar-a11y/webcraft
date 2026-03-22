@@ -4,6 +4,7 @@
 const express = require('express');
 const { Server } = require("socket.io");
 const mongoose = require('mongoose');
+const crypto = require('crypto'); // مكتبة لتوليد التوكنات العشوائية
 const path = require('path');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
@@ -76,6 +77,10 @@ const userSchema = new mongoose.Schema({
     teacherId: { type: String },
     responsibleForGroup: { type: String },
     createdAt: { type: Date, default: Date.now }, // حقل لتاريخ إنشاء الحساب
+    isVerified: { type: Boolean, default: false }, // هل الحساب مفعل؟
+    verificationToken: { type: String }, // توكن التفعيل
+    resetPasswordToken: { type: String }, // توكن استعادة كلمة المرور
+    resetPasswordExpires: { type: Date }, // تاريخ انتهاء صلاحية توكن الاستعادة
     lastLogin: { type: Date }, // جديد: حقل لتسجيل آخر دخول
     schedule: [{
         day: String,
@@ -223,10 +228,18 @@ app.post('/api/auth/google', async (req, res) => {
 
 app.post('/api/login', async (req, res) => {
     const { id, password } = req.body;
-    const user = await User.findOne({ id: id });
+    
+    // البحث عن المستخدم (id هنا هو الإيميل)
+    const user = await User.findOne({ id: id.toLowerCase() }); // تحويل لحروف صغيرة للمطابقة
 
     if (!user) return res.status(404).json({ message: 'المستخدم غير موجود.' });
     if (user.password !== password) return res.status(401).json({ message: 'كلمة المرور غير صحيحة.' });
+
+    // --- التحقق من تفعيل الحساب ---
+    // ملاحظة: المدراء والمعلمين القدامى قد لا يكون لديهم تفعيل، لذا نتخطى الشرط إذا لم يكن لديهم توكن أصلاً أو إذا كان الحساب قديماً
+    if (user.role === 'client' && user.isVerified === false) {
+         return res.status(403).json({ message: 'يرجى تفعيل حسابك أولاً من خلال الرابط المرسل لبريدك الإلكتروني.' });
+    }
 
     // --- جديد: تحديث تاريخ آخر تسجيل دخول ---
     user.lastLogin = new Date();
@@ -235,12 +248,38 @@ app.post('/api/login', async (req, res) => {
     res.json({ message: 'تم تسجيل الدخول بنجاح', user: user, redirectTo: getRedirectPage(user.role) });
 });
 
+// --- تعديل مسار التسجيل لإرسال إيميل التفعيل ---
 app.post('/api/users', async (req, res) => {
     try {
-        const newUser = new User(req.body);
+        const { name, id, password, role } = req.body;
+        
+        // توليد توكن تفعيل
+        const token = crypto.randomBytes(32).toString('hex');
+
+        const newUser = new User({
+            name,
+            id: id.toLowerCase(),
+            password,
+            role,
+            isVerified: false, // الحساب غير مفعل افتراضياً
+            verificationToken: token
+        });
+
         await newUser.save();
+
+        // إرسال بريد التفعيل
+        const verifyUrl = `${req.protocol}://${req.get('host')}/verify-email.html?token=${token}`;
+        
+        // استخدام إعدادات Nodemailer الموجودة
+        await sendEmailInternal(
+            id,
+            'تفعيل حسابك في Web Craft',
+            `أهلاً ${name}،\n\nشكراً لتسجيلك معنا. يرجى الضغط على الرابط التالي لتفعيل حسابك:\n\n${verifyUrl}\n\nهذا الرابط صالح لمدة 24 ساعة.`
+        );
+
         res.status(201).json(newUser);
     } catch (error) {
+        console.error("Signup Error:", error);
         if (error.code === 11000) return res.status(400).json({ message: 'رقم العضوية مستخدم بالفعل.' });
         res.status(400).json({ message: 'فشلت إضافة المستخدم.' });
     }
@@ -250,6 +289,103 @@ app.get('/api/users/all', async (req, res) => {
     const users = await User.find();
     res.json(users);
 });
+
+// --- مسار تفعيل البريد الإلكتروني (عند الضغط على الرابط) ---
+app.post('/api/auth/verify-email', async (req, res) => {
+    try {
+        const { token } = req.body;
+        const user = await User.findOne({ verificationToken: token });
+
+        if (!user) return res.status(400).json({ message: 'رابط التفعيل غير صالح أو منتهي الصلاحية.' });
+
+        user.isVerified = true;
+        user.verificationToken = undefined; // حذف التوكن بعد الاستخدام
+        await user.save();
+
+        res.json({ message: 'تم تفعيل الحساب بنجاح! يمكنك الآن تسجيل الدخول.' });
+    } catch (error) {
+        res.status(500).json({ message: 'حدث خطأ أثناء التفعيل.' });
+    }
+});
+
+// --- مسار طلب استعادة كلمة المرور (Forgot Password) ---
+app.post('/api/auth/forgot-password', async (req, res) => {
+    const { email } = req.body;
+    try {
+        const user = await User.findOne({ id: email.toLowerCase() });
+        if (!user) return res.status(404).json({ message: 'البريد الإلكتروني غير مسجل لدينا.' });
+
+        // توليد توكن الاستعادة
+        const token = crypto.randomBytes(32).toString('hex');
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 3600000; // صلاحية لمدة ساعة واحدة
+        await user.save();
+
+        // رابط إعادة التعيين (يوجه لصفحة Frontend)
+        const resetUrl = `${req.protocol}://${req.get('host')}/reset-password.html?token=${token}`;
+
+        await sendEmailInternal(
+            user.id,
+            'استعادة كلمة المرور - Web Craft',
+            `لقد تلقينا طلباً لاستعادة كلمة المرور الخاصة بحسابك.\n\nاضغط على الرابط التالي لإنشاء كلمة مرور جديدة:\n\n${resetUrl}\n\nإذا لم تطلب هذا، يرجى تجاهل الرسالة.`
+        );
+
+        res.json({ message: 'تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني.' });
+    } catch (error) {
+        console.error("Forgot Password Error:", error);
+        res.status(500).json({ message: 'حدث خطأ في الخادم.' });
+    }
+});
+
+// --- مسار تعيين كلمة المرور الجديدة (Reset Password) ---
+app.post('/api/auth/reset-password', async (req, res) => {
+    const { token, newPassword } = req.body;
+    try {
+        const user = await User.findOne({
+            resetPasswordToken: token,
+            resetPasswordExpires: { $gt: Date.now() } // التأكد أن الوقت لم ينتهِ
+        });
+
+        if (!user) return res.status(400).json({ message: 'الرابط غير صالح أو انتهت صلاحيته.' });
+
+        user.password = newPassword;
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+        await user.save();
+
+        res.json({ message: 'تم تغيير كلمة المرور بنجاح. يمكنك تسجيل الدخول الآن.' });
+    } catch (error) {
+        res.status(500).json({ message: 'حدث خطأ أثناء تغيير كلمة المرور.' });
+    }
+});
+
+// --- دالة مساعدة داخلية لإرسال الإيميل ---
+async function sendEmailInternal(to, subject, text) {
+    const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: parseInt(process.env.SMTP_PORT || '587', 10),
+        secure: process.env.SMTP_SECURE === 'true',
+        auth: {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASS,
+        },
+    });
+
+    await transporter.sendMail({
+        from: `Web Craft Security <${process.env.SMTP_USER}>`,
+        to: to,
+        subject: subject,
+        text: text,
+        html: `<div style="font-family: 'Tajawal', sans-serif; text-align: right; direction: rtl; padding: 20px; background-color: #f4f4f4;">
+                <div style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1);">
+                    <h2 style="color: #8b5cf6;">Web Craft</h2>
+                    <p style="white-space: pre-wrap; font-size: 16px; color: #333;">${text.replace(/\n/g, '<br>')}</p>
+                    <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+                    <p style="font-size: 12px; color: #777;">إذا لم تقم بهذا الطلب، يمكنك تجاهل هذا البريد بأمان.</p>
+                </div>
+               </div>`
+    });
+}
 
 app.get('/api/teacher/students', async (req, res) => {
     const { teacherId } = req.query;
