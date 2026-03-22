@@ -358,8 +358,9 @@ app.post('/api/auth/forgot-password', async (req, res) => {
         res.json({ message: 'تم إرسال رابط استعادة كلمة المرور إلى بريدك الإلكتروني.' });
     } catch (error) {
         console.error("Forgot Password Error:", error);
-        // تعديل: إظهار تفاصيل الخطأ للمستخدم لمعرفة السبب (مثل خطأ في كلمة مرور الإيميل)
-        res.status(500).json({ message: 'فشل إرسال البريد: ' + (error.message || 'خطأ غير معروف') });
+        // تحسين عرض الخطأ: إذا كانت المشكلة في الاتصال بجوجل
+        const msg = error.message.includes('Missing') ? error.message : 'فشل إرسال البريد: تأكد من إعدادات SMTP في Render.';
+        res.status(500).json({ message: msg + ' (' + (error.code || '') + ')' });
     }
 });
 
@@ -387,6 +388,11 @@ app.post('/api/auth/reset-password', async (req, res) => {
 
 // --- دالة مساعدة داخلية لإرسال الإيميل ---
 async function sendEmailInternal(to, subject, text) {
+    // التحقق من وجود المتغيرات قبل المحاولة
+    if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
+        throw new Error('⚠️ خطأ حرج: لم يتم إضافة إيميل المرسل أو كلمة المرور في إعدادات Render (Environment Variables).');
+    }
+
     // التحقق مما إذا كان البريد هو جيميل لاستخدام الإعدادات التلقائية
     const isGmail = process.env.SMTP_USER && process.env.SMTP_USER.includes('@gmail.com');
 
@@ -851,6 +857,13 @@ async function startServer() {
             connectTimeoutMS: 10000,
         });
         console.log('✅ تم الاتصال بقاعدة البيانات بنجاح');
+
+        // التحقق من إعدادات البريد وطباعة رسالة تأكيد
+        if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+            console.log(`✅ خدمة البريد الإلكتروني مفعلة للحساب: ${process.env.SMTP_USER}`);
+        } else {
+            console.warn('⚠️ تنبيه: إعدادات البريد الإلكتروني (SMTP) مفقودة.');
+        }
 
         // 2. إنشاء حسابات المدراء إذا لم تكن موجودة
         await createDefaultAdminIfNeeded();
